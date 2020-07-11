@@ -1,0 +1,48 @@
+{
+    "name": "mrcoco/phalms",
+    "description": "This is a LMS (Learning Management System) sample application for the Phalcon PHP Framework based on Vokuro-modular",
+    "version": "0.2.0",
+    "keywords": [
+        "phalcon",
+        "framework",
+        "sample app",
+        "phalms",
+        "elearning",
+        "lms",
+        "CRUD Generator",
+        "module generator",
+        "modular"
+    ],
+    "type": "library",
+    "license": "BSD-3-Clause",
+    "homepage": "http://www.cempakaweb.com",
+    "authors" : [
+        {
+            "name"  : "Dwi Agus Purwanto",
+            "email" : "dwiagus@cempakaweb.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5",
+        "mnsami/composer-custom-directory-installer": "1.1.*",
+        "mrcoco/phalms-installer": "dev-master",
+        "mrcoco/phalms-core": "dev-master",
+        "mrcoco/phalms-cli": "dev-master",
+        "mrcoco/phalms-cms": "dev-master",
+        "mrcoco/phalms-banner": "dev-master",
+        "stanislav-web/phalcon-uploader": "1.4-beta",
+        "swiftmailer/swiftmailer": "^5.4",
+        "raiym/instagram-php-scraper": "^0.5.7",
+        "pusher/pusher-php-server": "^2.6",
+        "ext-apcu": "*"
+    },
+    "extra": {
+        "installer-paths": {
+            "./modules/installer/": ["mrcoco/phalms-installer"],
+            "./modules/core/": ["mrcoco/phalms-core"],
+            "./modules/lms/": ["mrcoco/phalms-lms"],
+            "./modules/addons/cms/": ["mrcoco/phalms-cms"],
+            "./modules/addons/banner/": ["mrcoco/phalms-banner"]
+        }
+    }
+}

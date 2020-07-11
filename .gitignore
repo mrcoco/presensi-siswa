@@ -1,0 +1,12 @@
+.idea/
+.project
+.DS_Store
+composer.lock
+composer.phar
+vendor/
+data.txt
+cache/volt/*.php
+cache/metaData/*.php
+app/config/config.php
+app/config/config.db.php
+/nbproject/
