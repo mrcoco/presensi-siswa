@@ -11,20 +11,24 @@
 namespace Modules\Presensi\Controllers;
 
 
+use Modules\Frontend\Controllers\ControllerBase;
 use Modules\History\Models\History;
 use Modules\Kelas\Models\Kelas;
 use Modules\Presensi\Models\Presensi;
 use Modules\Presensi\Plugin\Helper;
 use Modules\Tahunajaran\Models\Tahunajaran;
+use Phalcon\Assets\Filters\Jsmin;
+use Phalcon\Http\Response;
+use Phalcon\Mvc\Model\ResultsetInterface;
 
-class LaporanController extends \Modules\Frontend\Controllers\ControllerBase
+class LaporanController extends ControllerBase
 {
     /**
-     * @var \Phalcon\Mvc\Model\ResultsetInterface|void
+     * @var ResultsetInterface|void
      */
     private $tahun;
     /**
-     * @var \Phalcon\Mvc\Model\ResultsetInterface|void
+     * @var ResultsetInterface|void
      */
     private $kelas;
 
@@ -39,7 +43,7 @@ class LaporanController extends \Modules\Frontend\Controllers\ControllerBase
             ->setTargetUri("themes/admin/assets/js/combined-presensi-laporan.js")
             ->join(true)
             ->addJs($this->config->application->addonsDir."presensi/views/js/laporan.js")
-            ->addFilter(new \Phalcon\Assets\Filters\Jsmin());
+            ->addFilter(new Jsmin());
     }
 
     public function indexAction()
@@ -55,18 +59,29 @@ class LaporanController extends \Modules\Frontend\Controllers\ControllerBase
             $kelas = $this->request->getPost("kelas");
             $tahun = $this->request->getPost("tahun_ajaran");
             $tanggal = $this->request->getPost("tanggal");
-            $presensi = Presensi::find([
-                'conditions' => 'kelas= ?1 AND tahun_ajaran= ?2 AND tanggal= ?3',
+            $presensi = History::find([
+                'conditions' => 'kelas= ?1 AND tahun= ?2',
                 'bind' => [
                     1 => $kelas,
                     2 => $tahun,
-                    3 => $tanggal
                 ]
             ]);
-            $response = new \Phalcon\Http\Response();
-            $response->setContentType('application/json', 'UTF-8');
-            $response->setJsonContent($presensi);
-            return $response->send();
+            $arr = array();
+            foreach ($presensi as $siswa)
+            {
+                $arr[] = [
+                    'nisn' => $siswa->nisn,
+                    'nama' => $siswa->nama,
+                    'sex'  => $siswa->sex,
+                    'presensi' => $siswa->getPresensi(
+                        ['conditions' => "kelas = '{$kelas}' AND tahun_ajaran='{$tahun}' AND tanggal = '{$tanggal}' "]),
+                ];
+            }
+//            $response = new Response();
+//            $response->setContentType('application/json', 'UTF-8');
+//            $response->setJsonContent($presensi);
+//            return $response->send();
+            echo $this->harian($arr);
         }
     }
 
@@ -99,21 +114,110 @@ class LaporanController extends \Modules\Frontend\Controllers\ControllerBase
 //        $response->setContentType('application/json', 'UTF-8');
 //        $response->setJsonContent($arr);
 //        return $response->send();
-        echo $this->bulanan($arr);
+        //echo $this->bulanan($arr,$bulan);
+        echo "<pre>";
+        print_r($arr);
+        echo "</pre>";
     }
 
-    public function bulanan($arr)
+    public function harian($arr)
     {
-        $bt ='06-2020';
+        $html = "";
+        $html .= "<table id=\"presensi-harian\" class=\"table table-condensed table-hover table-striped\">";
+        $html .= "<thead>";
+        $html .= "<tr>";
+        $html .= "<th>NAMA</th>";
+        $html .= "<th>NIS</th>";
+        $html .= "<th>JK</th>";
+        $html .= "<th>SESI 1</th>";
+        $html .= "<th>SESI 2</th>";
+        $html .= "<th>SESI 3</th>";
+        $html .= "<th>SESI 4</th>";
+        $html .= "<th>SESI 5</th>";
+        $html .= "<th>I</th>";
+        $html .= "<th>S</th>";
+        $html .= "<th>A</th>";
+        $html .= "<th>KET</th>";
+        $html .= "</tr>";
+        $html .= "</thead>";
+        $html .= "<tbody>";
+        foreach ($arr as $item) {
+            $html .= "<tr>";
+            $html .= "<td>" . $item['nama'] . "</td>";
+            $html .= "<td>" . $item['nisn'] . "</td>";
+            $html .= "<td>" . $item['sex'] . "</td>";
+            $izin = 0;
+            $sakit = 0;
+            $hadir = 0;
+            $sesi = [1,2,3,4,5];
+            $arr_sesi = [];
+            for($i=1; $i<=5; $i++)
+            {
+                $html .= "<td>";
+                foreach ($item['presensi'] as $pres) {
+                    if($pres->status == '1' || $pres->status == '2'){
+                        if($pres->sesi == $i)
+                        {
+                            $html .= date('H:m:s',strtotime($pres->jam_masuk));
+                            $arr_sesi[] = $i;
+                        }
+                    }
+                    if($pres->status == '3')
+                    {
+                        $izin +=1;
+                        //$html .="I";
+                    }
+                    if($pres->status == '4')
+                    {
+                        $sakit +=1;
+                        //$html .="S";
+                    }
+                    $hadir +=1;
+                }
+                $html .= "</td>";
+            }
+            if($hadir == 0){
+                $alpha = "A";
+            }else{
+                $alpha = "-";
+            }
+            if($izin !== 0){
+                $iz = "I";
+            }else{
+                $iz = "-";
+            }
+            if($sakit !== 0)
+            {
+                $sk = "S";
+            }else{
+                $sk = "-";
+            }
+            $diff = array_diff($sesi,$arr_sesi);
 
+            if(count($diff) !== 5){
+                $kt = implode(",",$diff);
+                $ket = "Tidak ikut sesi ".$kt;
+            }else{
+                $ket = "";
+            }
+            $html .= "<td>{$iz}</td>";
+            $html .= "<td>{$sk}</td>";
+            $html .= "<td>{$alpha}</td>";
+            $html .= "<td>{$ket}</td>";
+        }
+        return $html;
+    }
+
+    public function bulanan($arr,$bt)
+    {
         $start = Helper::firstday($bt);
         $end = Helper::lastDay($bt);
         $work = Helper::workingDay($start,$end);
         $html = "";
-        $html .= "<table id=\"grid-izin-presensi\" class=\"table table-condensed table-hover table-striped\">";
+        $html .= "<table id=\"presensi-bulanan\" class=\"table table-condensed table-hover table-striped\">";
         $html .= "<thead>";
         $html .= "<tr>";
-        $html .= "<th rowspan='2' valign='top'>Nama</th>";
+        $html .= "<th rowspan='2' valign='top'>NAMA</th>";
         $html .= "<th rowspan='2' valign='top'>NIS</th>";
         $html .= "<th rowspan='2' valign='top'>JK</th>";
         $html .= "<th colspan='".count($work)."'>TANGGAL</th>";
