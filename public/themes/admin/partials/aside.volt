@@ -79,7 +79,7 @@
                 </span>
                     </a>
                     <ul class="nav nav-sub nav-stacked">
-                        <li><a href="{{ url("siswa") }}">
+                        <li><a href="javascript:;">
                             <span class="nav-icon">
                               <i class="fa fa-fw fa-tasks"></i>
                             </span>
@@ -92,7 +92,7 @@
                                     <a href="{{ url("siswa") }}">Data Siswa</a>
                                 </li>
                                 <li>
-                                    <a href="{{ url("siswa/upload") }}">Import Siswa</a>
+                                    <a href="{{ url("siswa/import") }}">Import Siswa</a>
                                 </li>
                             </ul>
 
