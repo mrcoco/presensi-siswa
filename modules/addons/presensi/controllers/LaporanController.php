@@ -17,9 +17,11 @@ use Modules\Kelas\Models\Kelas;
 use Modules\Presensi\Models\Presensi;
 use Modules\Presensi\Plugin\Helper;
 use Modules\Tahunajaran\Models\Tahunajaran;
+use Modules\Webconfig\Models\Webconfig;
 use Phalcon\Assets\Filters\Jsmin;
 use Phalcon\Http\Response;
 use Phalcon\Mvc\Model\ResultsetInterface;
+use Phalcon\Mvc\View;
 
 class LaporanController extends ControllerBase
 {
@@ -81,17 +83,28 @@ class LaporanController extends ControllerBase
 //            $response->setContentType('application/json', 'UTF-8');
 //            $response->setJsonContent($presensi);
 //            return $response->send();
-            echo $this->harian($arr);
+            echo $this->harianSesi($arr);
         }
     }
 
     public function search_bulananAction()
     {
-        $this->view->disable();
         $kelas = $this->request->getPost('kelas');
         $tahun = $this->request->getPost('tahun_ajaran');
-        $bulan = $this->request->getPost('bulan');
-        $mode  = '0';
+        if(empty($this->request->getPost('bulan')))
+        {
+            $bulan = date('m-Y');
+        }else{
+            $bulan = $this->request->getPost('bulan');
+        }
+
+        $mode  = $this->request->getPost('mode');
+        if($mode == 0)
+        {
+            $isMode = 'AND sesi=0';
+        }else{
+            $isMode = 'AND sesi <> 0';
+        }
         $history = History::find([
             'conditions' => "kelas= ?1 AND tahun= ?2",
             'bind' => [
@@ -107,17 +120,30 @@ class LaporanController extends ControllerBase
                 'nama' => $siswa->nama,
                 'sex'  => $siswa->sex,
                 'presensi' => $siswa->getPresensi(
-                    ['conditions' => "kelas = '{$kelas}' AND tahun_ajaran='{$tahun}' AND DATE_FORMAT(tanggal,'%m-%Y') = '{$bulan}' "]),
+                    ['conditions' => "kelas = '{$kelas}' AND tahun_ajaran='{$tahun}' AND DATE_FORMAT(tanggal,'%m-%Y') = '{$bulan}' ".$isMode]),
             ];
         }
-//        $response = new \Phalcon\Http\Response();
-//        $response->setContentType('application/json', 'UTF-8');
-//        $response->setJsonContent($arr);
-//        return $response->send();
-        echo $this->bulanan($arr,$bulan);
+        $webconfig = Webconfig::find()->toArray();
+        $start = Helper::firstday($bulan);
+        $end = Helper::lastDay($bulan);
+        $work = Helper::workingDay($start,$end);
+        $this->view->setRenderLevel(
+            View::LEVEL_ACTION_VIEW
+        );
+        $this->view->setVar('webconfig',$webconfig);
+        $this->view->setVar('count_work',count($work));
+        $this->view->setVar('work',$work);
+        $this->view->setVar('arr',$arr);
+        if($mode == 0)
+        {
+            $this->view->pick('laporan/rekap_normal_bulanan');
+        }else{
+            $this->view->pick('laporan/rekap_sesi_bulanan');
+        }
+
     }
 
-    public function harian($arr)
+    public function harianSesi($arr)
     {
         $html = "";
         $html .= "<table id=\"presensi-harian\" class=\"table table-condensed table-hover table-striped\">";
@@ -206,7 +232,12 @@ class LaporanController extends ControllerBase
         return $html;
     }
 
-    public function bulanan($arr,$bt)
+    public function bulananDatangPulang($arr,$bt)
+    {
+
+    }
+
+    public function bulananSesi($arr, $bt)
     {
         $start = Helper::firstday($bt);
         $end = Helper::lastDay($bt);
@@ -288,7 +319,7 @@ class LaporanController extends ControllerBase
     {
         $this->view->setVar('kelas',$this->kelas);
         $this->view->setVar('tahun',$this->tahun);
-        $this->view->pick("laporan_bulanan");
+        $this->view->pick("laporan/index_bulanan");
     }
 
     public function cetak_bulananAction()

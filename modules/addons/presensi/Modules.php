@@ -38,6 +38,7 @@ class Module implements ModuleDefinitionInterface
                 "Modules\\Kelas\\Models"      => $config->modules->addons."/kelas/models/",
                 "Modules\\Tahunajaran\\Models"      => $config->modules->addons."/tahunajaran/models/",
                 "Modules\\History\\Models"      => $config->modules->addons."/history/models/",
+                "Modules\\Webconfig\\Models"      => $config->modules->core."/webconfig/models/",
             ]
         );
 
