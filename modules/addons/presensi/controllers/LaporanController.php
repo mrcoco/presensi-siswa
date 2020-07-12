@@ -114,10 +114,7 @@ class LaporanController extends ControllerBase
 //        $response->setContentType('application/json', 'UTF-8');
 //        $response->setJsonContent($arr);
 //        return $response->send();
-        //echo $this->bulanan($arr,$bulan);
-        echo "<pre>";
-        print_r($arr);
-        echo "</pre>";
+        echo $this->bulanan($arr,$bulan);
     }
 
     public function harian($arr)
@@ -204,6 +201,7 @@ class LaporanController extends ControllerBase
             $html .= "<td>{$sk}</td>";
             $html .= "<td>{$alpha}</td>";
             $html .= "<td>{$ket}</td>";
+            $html .= "</tr>";
         }
         return $html;
     }

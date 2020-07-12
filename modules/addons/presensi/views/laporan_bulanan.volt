@@ -30,16 +30,17 @@
                         {% endfor %}
                     </select>
                 </div>
+
                 <div class="form-group" >
-                    <label>Mode</label>
+                    <label>Tanggal</label>
+                    <input autocomplete="off"  type="text" name="bulan" class="form-control bulan" placeholder="yyyy-mm">
+                </div>
+                <div class="form-group" >
+                    <label>Mode Presensi</label>
                     <select class="form-control" name="mode" id="mode" >
                         <option value="0">Datang Pulang</option>
                         <option value="1">Sesi</option>
                     </select>
-                </div>
-                <div class="form-group" >
-                    <label>Tanggal</label>
-                    <input autocomplete="off"  type="text" name="bulan" class="form-control bulan" placeholder="yyyy-mm">
                 </div>
                 <div class="form-group" >
                     <button type="submit" name="submit" class="btn btn-primary" id="submit"><i class="fa fa-search"></i>  Submit </button>

@@ -141,6 +141,7 @@ $(document).ready(function(){
         notif_show(mesg);
     }
 
+    $('.date').mask('0000-00-00');
     $('.date_time').mask('0000-00-00 00:00:00');
 
     $('input[name="siswa_nama"]').autoComplete({

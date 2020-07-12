@@ -50,7 +50,7 @@
                 </li>
 
                 <li class="nav-divider"></li>
-                <li class="nav-header">Components</li>
+                <li class="nav-header">Presensi</li>
 
                 <!-- BEGIN: user -->
                 {% if auth.getIdentity()['profile'] == "Users" %}
@@ -67,23 +67,56 @@
 
                 {% if auth.getIdentity()['profile'] == "Administrators" %}
                 <!-- BEGIN: apps -->
+
                 <li>
                     <a href="javascript:;">
-                    <span class="nav-icon">
-                      <i class="fa fa-fw fa-tasks"></i>
-                    </span>
-                        <span class="nav-title">Presensi</span>
+                <span class="nav-icon">
+                  <i class="fa fa-fw fa-tasks"></i>
+                </span>
+                        <span class="nav-title">Manajemen</span>
                         <span class="nav-tools">
-                      <i class="fa fa-fw arrow"></i>
-                    </span>
+                  <i class="fa fa-fw arrow"></i>
+                </span>
                     </a>
                     <ul class="nav nav-sub nav-stacked">
-                        <li>
-                            <a href="{{ url("presensi") }}">Presensi</a>
+                        <li><a href="{{ url("siswa") }}">
+                            <span class="nav-icon">
+                              <i class="fa fa-fw fa-tasks"></i>
+                            </span>
+                            <span class="nav-title">Siswa</span>
+                            <span class="nav-tools">
+                              <i class="fa fa-fw arrow"></i>
+                            </span></a>
+                            <ul class="nav nav-sub nav-stacked">
+                                <li>
+                                    <a href="{{ url("siswa") }}">Data Siswa</a>
+                                </li>
+                                <li>
+                                    <a href="{{ url("siswa/upload") }}">Import Siswa</a>
+                                </li>
+                            </ul>
+
                         </li>
                         <li>
-                            <a href="{{ url("presensi/izin") }}">Izin</a>
+                            <a href="javascript:;">
+                            <span class="nav-icon">
+                              <i class="fa fa-fw fa-tasks"></i>
+                            </span>
+                                        <span class="nav-title">Presensi</span>
+                                        <span class="nav-tools">
+                              <i class="fa fa-fw arrow"></i>
+                            </span>
+                            </a>
+                            <ul class="nav nav-sub nav-stacked">
+                                <li>
+                                    <a href="{{ url("presensi") }}">Presensi Manual</a>
+                                </li>
+                                <li>
+                                    <a href="{{ url("presensi/izin") }}">Izin</a>
+                                </li>
+                            </ul>
                         </li>
+
                     </ul>
                 </li>
                 <li>
@@ -98,74 +131,34 @@
                     </a>
                     <ul class="nav nav-sub nav-stacked">
                         <li>
-                            <a href="{{ url("laporan/harian") }}">Harian</a>
+                            <a href="{{ url("laporan/presensi/harian") }}">Presensi Harian</a>
                         </li>
                         <li>
-                            <a href="{{ url("laporan/bulanan") }}">Bulanan</a>
+                            <a href="{{ url("laporan/presensi/bulanan") }}">Presensi Bulanan</a>
+                        </li>
+                        <li>
+                            <a href="{{ url("laporan/harian") }}">Rekap Harian</a>
+                        </li>
+                        <li>
+                            <a href="{{ url("laporan/bulanan") }}">Rekap Bulanan</a>
                         </li>
                     </ul>
                 </li>
+
                 <!-- BEGIN: apps -->
 
                 <!-- BEGIN: blank pages -->
-{#                <li>#}
-{#                    <a href="javascript:;">#}
-{#                    <span class="nav-icon">#}
-{#                      <i class="fa fa-fw fa-book text-alizarin"></i>#}
-{#                    </span>#}
-{#                        <span class="nav-title">Content</span>#}
-{#                        <span class="nav-tools">#}
-{#                      <i class="fa fa-fw arrow"></i>#}
-{#                    </span>#}
-{#                    </a>#}
-{#                    <ul class="nav nav-sub nav-stacked">#}
-{#                        <li>#}
-{#                            <a href="{{ url("announcements") }}">Announcements</a>#}
-{#                        </li>#}
-{#                        <li>#}
-{#                            <a href="javascript:;">#}
-{#                                <span class="nav-title">Blog</span>#}
-{#                                <span class="nav-tools">#}
-{#                          <i class="fa fa-fw arrow"></i>#}
-{#                        </span>#}
-{#                            </a>#}
-{#                            <ul class="nav nav-sub">#}
-{#                                <li>#}
-{#                                    <a href="{{ url("blog") }}">#}
-{#                                        <span class="nav-title">Blog </span>#}
-{#                                    </a>#}
-{#                                </li>#}
-{#                                <li>#}
-{#                                    <a href="{{ url("blog/category") }}">#}
-{#                                        <span class="nav-title">Category</span>#}
-{#                                    </a>#}
-{#                                </li>#}
-{#                            </ul>#}
-{#                        </li>#}
-{#                        <li>#}
-{#                            <a href="javascript:;">#}
-{#                                <span class="nav-title">Pages</span>#}
-{#                                <span class="nav-tools">#}
-{#                          <i class="fa fa-fw arrow"></i>#}
-{#                        </span>#}
-{#                            </a>#}
-{#                            <ul class="nav nav-sub">#}
-{#                                <li>#}
-{#                                    <a href="{{ url("page") }}">#}
-{#                                        <span class="nav-title">Pages </span>#}
-{#                                    </a>#}
-{#                                </li>#}
-{#                                <li>#}
-{#                                    <a href="{{ url("page/category") }}">#}
-{#                                        <span class="nav-title">Category</span>#}
-{#                                    </a>#}
-{#                                </li>#}
-{#                            </ul>#}
-{#                        </li>#}
-{#                    </ul>#}
-{#                </li>#}
                 <!-- END: blank pages -->
 
+                <li class="nav-divider"></li>
+
+                <li>
+                    <a href="{{ url("pengumuman") }}">
+                    <span class="nav-icon">
+                      <i class="fa fa-fw fa-newspaper-o"></i>
+                    </span>
+                        Pengumuman</a>
+                </li>
                 <li class="nav-divider"></li>
 
                 <!-- BEGIN: utility -->
@@ -198,50 +191,27 @@
 {#                <li>#}
 {#                    <a href="javascript:;">#}
 {#                    <span class="nav-icon">#}
-{#                      <i class="fa fa-fw fa-code"></i>#}
+{#                      <i class="fa fa-cogs"></i>#}
 {#                    </span>#}
-{#                        <span class="nav-title">Utility</span>#}
+{#                        <span class="nav-title">Addon Modules</span>#}
 {#                        <span class="nav-tools">#}
 {#                      <i class="fa fa-fw arrow"></i>#}
 {#                    </span>#}
 {#                    </a>#}
+{#                    {% if widget.addonmenu() is not empty %}#}
 {#                    <ul class="nav nav-sub">#}
+{#                        {% for item in widget.addonmenu() %}#}
 {#                        <li>#}
-{#                            <a href="{{ url("modules")}}">#}
-{#                                <span class="nav-title">Module Manager</span>#}
+{#                            <a href="{{ url(item.slug)}}">#}
+{#                                <span class="nav-title">{{item.name}}</span>#}
 {#                            </a>#}
 {#                        </li>#}
-{#                        <li>#}
-{#                            <a href="{{ url("menu") }}">#}
-{#                                <span class="nav-title">Menu Manager</span>#}
-{#                            </a>#}
-{#                        </li>#}
+{#                        {% endfor %}#}
+{#                        <li></li>#}
 {#                    </ul>#}
+{#                    {% endif %}#}
+{#                    #}
 {#                </li>#}
-                <li>
-                    <a href="javascript:;">
-                    <span class="nav-icon">
-                      <i class="fa fa-cogs"></i>
-                    </span>
-                        <span class="nav-title">Addon Modules</span>
-                        <span class="nav-tools">
-                      <i class="fa fa-fw arrow"></i>
-                    </span>
-                    </a>
-                    {% if widget.addonmenu() is not empty %}
-                    <ul class="nav nav-sub">
-                        {% for item in widget.addonmenu() %}
-                        <li>
-                            <a href="{{ url(item.slug)}}">
-                                <span class="nav-title">{{item.name}}</span>
-                            </a>
-                        </li>
-                        {% endfor %}
-                        <li></li>
-                    </ul>
-                    {% endif %}
-                    
-                </li>
                 {% endif %}
             </ul>
             <!-- END: nav-content -->

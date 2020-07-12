@@ -58,7 +58,7 @@
                     </div>
                     <div class="form-group" >
                     <label>Tanggal</label>
-                    <input type="text" class="form-control" name="tanggal" id="tanggal" >
+                    <input type="text" autocomplete="off" class="form-control date" name="tanggal" id="tanggal" placeholder="yyyy-mm-dd">
                     </div>
                     <div class="form-group" >
                     <label>Sesi</label>

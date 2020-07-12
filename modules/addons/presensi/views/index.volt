@@ -58,20 +58,24 @@
                     </div>
                     <div class="form-group" >
                     <label>Kelas</label>
-                        <input type="text" class="form-control" name="kelas" id="kelas" >
+                        <select class="form-control" name="kelas" id="kelas" >
+                            {% for item in kelas %}
+                                <option value="{{ item.nama }}">{{ item.nama }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
 
                     <div class="form-group" >
                     <label>Tanggal</label>
-                    <input type="text" class="form-control date" name="tanggal" id="tanggal" >
+                    <input type="text" autocomplete="off" class="form-control date" name="tanggal" id="tanggal" placeholder="yyyy-mm-dd">
                     </div>
                     <div class="form-group" >
                     <label>Jam_masuk</label>
-                    <input type="text" class="form-control date_time" name="jam_masuk" id="jam_masuk" >
+                    <input type="text" autocomplete="off" class="form-control date_time" name="jam_masuk" id="jam_masuk" placeholder="yyyy-mm-dd Hh:mm:ss">
                     </div>
                     <div class="form-group" >
                     <label>Jam_keluar</label>
-                    <input type="text" class="form-control date_time" name="jam_keluar" id="jam_keluar" >
+                    <input type="text" autocomplete="off" class="form-control date_time" name="jam_keluar" id="jam_keluar" placeholder="yyyy-mm-dd Hh:mm:ss">
                     </div>
                     <div class="form-group" >
                     <label>Sesi</label>
