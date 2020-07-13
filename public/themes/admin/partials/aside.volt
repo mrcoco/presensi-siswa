@@ -116,6 +116,24 @@
                                 </li>
                             </ul>
                         </li>
+                        <li><a href="{{url("kelas")}}">
+                            <span class="nav-icon">
+                              <i class="fa fa-fw fa-tasks"></i>
+                            </span>
+                                <span class="nav-title">Kelas</span>
+                            </a></li>
+                        <li><a href="{{url('tahunajaran')}}">
+                            <span class="nav-icon">
+                              <i class="fa fa-fw fa-tasks"></i>
+                            </span>
+                                <span class="nav-title">Tahun Ajaran</span>
+                            </a></li>
+                        <li><a href="{{url('libur')}}">
+                            <span class="nav-icon">
+                              <i class="fa fa-fw fa-tasks"></i>
+                            </span>
+                                <span class="nav-title">Hari Libur</span>
+                            </a></li>
 
                     </ul>
                 </li>
