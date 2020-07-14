@@ -62,11 +62,11 @@
                     {{ jam_masuk }}
                 {% endif %}
                     <br>
-                    {% if(time_jam_keluar) > time_awal %}
-                        <b class="terlambat">{{ jam_keluar }}</b>
-                    {% else %}
-                        {{ jam_keluar }}
-                    {% endif %}
+                {% if(time_jam_keluar) < time_awal %}
+                    <b class="terlambat">{{ jam_keluar }}</b>
+                {% else %}
+                    {{ jam_keluar }}
+                {% endif %}
 
                 {% endif %}
                 {% if pres.status == '3' %}
