@@ -7,7 +7,7 @@
     }
 </style>
 <div class="cetak">
-    <a class="btn btn-primary" href="{{ url("cetak/bulanan?url=") }}{{ url_print }}"><i class="fa fa-print"></i> Cetak</a>
+    <a class="btn btn-primary" href="{{ url("cetak/bulanan?url=") }}{{ url_print }}" target="_blank"><i class="fa fa-print"></i> Cetak</a>
 </div>
 <table id="presensi-bulanan" class="table table-condensed table-hover table-striped">
 <thead>
@@ -21,8 +21,7 @@
     </tr>
 <tr>
     {% for k,item in work %}
-
-    <?php list($y,$m,$d) = explode("-",$item); ?>
+        <?php $d = date('M d',strtotime($item)); ?>
     <th>{{ d }}</th>
     {% endfor %}
     <th rowspan='2'>I</th>

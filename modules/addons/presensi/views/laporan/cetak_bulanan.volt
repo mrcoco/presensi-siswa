@@ -57,8 +57,11 @@
 </head>
 <body>
 <div class="container">
+
+</div>
+<div id="result" class="cont">
     <div class="row">
-        <div class="col-md-12 text-center">
+        <div class="col-md-12">
             <img src="{{ url('themes/frontend/images/sma.png') }}" class="imgg">
             <h4 class="kop-subheader">PEMERINTAH KABUPATEN BANTUL</h4>
             <h4 class="kop-subheader">DINAS PENDIDIKAN PEMUDA DAN OLAHRAGA</h4>
@@ -69,17 +72,12 @@
             </p>
         </div>
     </div>
-</div>
-<div id="result" class="cont">
-    <div class="row">
-
-    </div>
     <div class="hrr"></div>
     <div class="row">
         <div class="col-md-12">
             <table id="presensi-bulanan" class="table-bordered table-condensed">
-                <thead>
-                <tr>
+                <thead >
+                <tr class="text-center">
                     <th rowspan='2' valign='top'>NAMA</th>
                     <th rowspan='2' valign='top'>NIS</th>
                     <th rowspan='2' valign='top'>JK</th>
@@ -89,7 +87,7 @@
                 </tr>
                 <tr>
                     {% for k,item in work %}
-                        <?php list($y,$m,$d) = explode("-",$item); ?>
+                        <?php $d = date('M d',strtotime($item)); ?>
                         <th>{{ d }}</th>
                     {% endfor %}
                     <th rowspan='2'>I</th>
