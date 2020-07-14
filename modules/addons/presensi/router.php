@@ -161,14 +161,14 @@ $router->add('/laporan/bulanan', array(
     'action'     => 'bulanan'
 ));
 
-$router->add('/laporan/cetak/harian', array(
+$router->add('/cetak/harian', array(
     'namespace'  => 'Modules\Presensi\Controllers',
     'module'     => 'presensi',
     'controller' => 'laporan',
     'action'     => 'cetak_harian'
 ));
 
-$router->add('/laporan/cetak/bulanan', array(
+$router->add('/cetak/bulanan', array(
     'namespace'  => 'Modules\Presensi\Controllers',
     'module'     => 'presensi',
     'controller' => 'laporan',

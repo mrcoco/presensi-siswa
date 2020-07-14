@@ -15,6 +15,7 @@ use Modules\Frontend\Controllers\ControllerBase;
 use Modules\History\Models\History;
 use Modules\Kelas\Models\Kelas;
 use Modules\Presensi\Models\Presensi;
+use Modules\Presensi\Plugin\Base64Url;
 use Modules\Presensi\Plugin\Helper;
 use Modules\Tahunajaran\Models\Tahunajaran;
 use Modules\Webconfig\Models\Webconfig;
@@ -49,6 +50,18 @@ class LaporanController extends ControllerBase
             ->join(true)
             ->addJs($this->config->application->addonsDir."presensi/views/js/laporan.js")
             ->addFilter(new Jsmin());
+
+        foreach (Webconfig::find()->toArray() as $k => $v) {
+            if($v['name'] == 'jam_terlambat'){
+                $this->terlambat = $v['content'];
+            }
+            if($v['name'] == 'jam_pulang_awal_jumat'){
+                $this->pulangawal_jumat = $v['content'];
+            }
+            if($v['name'] == 'jam_pulang_awal_normal'){
+                $this->pulangawal_normal = $v['content'];
+            }
+        }
     }
 
     public function indexAction()
@@ -100,51 +113,15 @@ class LaporanController extends ControllerBase
         }else{
             $bulan = $this->request->getPost('bulan');
         }
-
         $mode  = $this->request->getPost('mode');
-        if($mode == 0)
-        {
-            $isMode = 'AND sesi=0';
-        }else{
-            $isMode = 'AND sesi <> 0';
-        }
-        $history = History::find([
-            'conditions' => "kelas= ?1 AND tahun= ?2",
-            'bind' => [
-                1 => $kelas,
-                2 => $tahun
-            ]
-        ]);
-        $arr = array();
-        foreach ($history as $siswa)
-        {
-            $arr[] = [
-                'nisn' => $siswa->nisn,
-                'nama' => $siswa->nama,
-                'sex'  => $siswa->sex,
-                'presensi' => $siswa->getPresensi(
-                    ['conditions' => "kelas = '{$kelas}' AND tahun_ajaran='{$tahun}' AND DATE_FORMAT(tanggal,'%m-%Y') = '{$bulan}' ".$isMode]),
-            ];
-        }
-        $webconfig = Webconfig::find()->toArray();
-        foreach ($webconfig as $k => $v) {
-            if($v['name'] == 'jam_terlambat'){
-                $this->terlambat = $v['content'];
-            }
-            if($v['name'] == 'jam_pulang_awal_jumat'){
-                $this->pulangawal_jumat = $v['content'];
-            }
-            if($v['name'] == 'jam_pulang_awal_normal'){
-                $this->pulangawal_normal = $v['content'];
-            }
-        }
 
-        $start = Helper::firstday($bulan);
-        $end = Helper::lastDay($bulan);
-        $work = Helper::workingDay($start,$end);
+        $arr = $this->presensiBulanan($mode, $kelas, $tahun, $bulan);
+
+        $work = $this->workBulanan($bulan);
         $this->view->setRenderLevel(
             View::LEVEL_ACTION_VIEW
         );
+        $this->view->setVar('url_print',Base64Url::encode($tahun."/".$bulan."/".$mode."/".$kelas));
         $this->view->setVar('terlambat',$this->terlambat);
         $this->view->setVar('pulangawal_jumat', $this->pulangawal_jumat);
         $this->view->setVar('pulangawal_normal',$this->pulangawal_normal);
@@ -249,81 +226,6 @@ class LaporanController extends ControllerBase
         return $html;
     }
 
-    public function bulananDatangPulang($arr,$bt)
-    {
-
-    }
-
-    public function bulananSesi($arr, $bt)
-    {
-        $start = Helper::firstday($bt);
-        $end = Helper::lastDay($bt);
-        $work = Helper::workingDay($start,$end);
-        $html = "";
-        $html .= "<table id=\"presensi-bulanan\" class=\"table table-condensed table-hover table-striped\">";
-        $html .= "<thead>";
-        $html .= "<tr>";
-        $html .= "<th rowspan='2' valign='top'>NAMA</th>";
-        $html .= "<th rowspan='2' valign='top'>NIS</th>";
-        $html .= "<th rowspan='2' valign='top'>JK</th>";
-        $html .= "<th colspan='".count($work)."'>TANGGAL</th>";
-        $html .= "<th colspan='3'>JUMLAH</th>";
-        $html .= "<th rowspan='2' valign='top'>KET</th>";
-        $html .= "</tr>";
-        $html .= "<tr>";
-        foreach ($work as $k => $item) {
-            list($y,$m,$d) = explode("-",$item);
-            $html .= "<th>".$d."</th>";
-        }
-        $html .= "<th rowspan='2'>I</th>";
-        $html .= "<th rowspan='2'>S</th>";
-        $html .= "<th rowspan='2'>A</th>";
-        $html .= "</tr>";
-        $html .= "</thead>";
-        $html .= "<tbody>";
-        foreach ($arr as $item) {
-            $html .= "<tr>";
-            $html .= "<td>".$item['nama']."</td>";
-            $html .= "<td>".$item['nisn']."</td>";
-            $html .= "<td>".$item['sex']."</td>";
-            $izin = 0;
-            $sakit= 0;
-            $hadir= 0;
-            foreach ($work as $k => $wk) {
-                $html .= "<td>";
-                foreach ($item['presensi'] as $pres) {
-                    if ($pres->tanggal == $wk)
-                    {
-                        if($pres->status == '1' || $pres->status == '2'){
-                            $html .= date('H:m:s',strtotime($pres->jam_masuk)) ."<br>";
-                        }
-                        if($pres->status == '3')
-                        {
-                            $izin +=1;
-                            $html .="I";
-                        }
-                        if($pres->status == '4')
-                        {
-                            $sakit +=1;
-                            $html .="S";
-                        }
-                        $hadir +=1;
-                    }
-
-                }
-                $html .= "</td>";
-            }
-            $alpha= count($work)-$hadir;
-            $html .= "<td>{$izin}</td>";
-            $html .= "<td>{$sakit}</td>";
-            $html .= "<td>{$alpha}</td>";
-            $html .= "<td></td>";
-            $html .= "</tr>";
-        }
-        $html .= "</tbody>";
-        $html .="</table>";
-        return $html;
-    }
 
     public function harianAction()
     {
@@ -341,11 +243,69 @@ class LaporanController extends ControllerBase
 
     public function cetak_bulananAction()
     {
-
+        $geturl = Base64Url::decode($this->request->getQuery('url'));
+        list($tahun,$bulan,$mode,$kelas) = explode("/",$geturl);
+        $arr = $this->presensiBulanan($mode, $kelas, $tahun, $bulan);
+        $work = $this->workBulanan($bulan);
+        $this->view->setRenderLevel(
+            View::LEVEL_ACTION_VIEW
+        );
+        $this->view->setVar('terlambat',$this->terlambat);
+        $this->view->setVar('pulangawal_jumat', $this->pulangawal_jumat);
+        $this->view->setVar('pulangawal_normal',$this->pulangawal_normal);
+        $this->view->setVar('count_work',count($work));
+        $this->view->setVar('work',$work);
+        $this->view->setVar('arr',$arr);
+        $this->view->pick("laporan/cetak_bulanan");
     }
 
     public function cetak_harianAction()
     {
 
+    }
+
+    /**
+     * @param $mode
+     * @param $kelas
+     * @param $tahun
+     * @param $bulan
+     * @return array
+     */
+    public function presensiBulanan($mode, $kelas, $tahun, $bulan)
+    {
+        if ($mode == 0) {
+            $isMode = 'AND sesi=0';
+        } else {
+            $isMode = 'AND sesi <> 0';
+        }
+        $history = History::find([
+            'conditions' => "kelas= ?1 AND tahun= ?2",
+            'bind' => [
+                1 => $kelas,
+                2 => $tahun
+            ]
+        ]);
+        $arr = array();
+        foreach ($history as $siswa) {
+            $arr[] = [
+                'nisn' => $siswa->nisn,
+                'nama' => $siswa->nama,
+                'sex' => $siswa->sex,
+                'presensi' => $siswa->getPresensi(
+                    ['conditions' => "kelas = '{$kelas}' AND tahun_ajaran='{$tahun}' AND DATE_FORMAT(tanggal,'%m-%Y') = '{$bulan}' " . $isMode]),
+            ];
+        }
+        return $arr;
+    }
+
+    /**
+     * @param $bulan
+     * @return array
+     */
+    public function workBulanan($bulan)
+    {
+        $start = Helper::firstday($bulan);
+        $end = Helper::lastDay($bulan);
+        return Helper::workingDay($start, $end);
     }
 }
