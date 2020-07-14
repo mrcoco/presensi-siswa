@@ -175,16 +175,44 @@ $router->add('/cetak/bulanan', array(
     'action'     => 'cetak_bulanan'
 ));
 
-$router->add('/laporan/search/harian', array(
+$router->add('/search/laporan/harian', array(
     'namespace'  => 'Modules\Presensi\Controllers',
     'module'     => 'presensi',
     'controller' => 'laporan',
     'action'     => 'search_harian'
 ));
 
-$router->add('/laporan/search/bulanan', array(
+$router->add('/search/laporan/bulanan', array(
     'namespace'  => 'Modules\Presensi\Controllers',
     'module'     => 'presensi',
     'controller' => 'laporan',
     'action'     => 'search_bulanan'
+));
+
+$router->add('/laporan/presensi/bulanan', array(
+    'namespace'  => 'Modules\Presensi\Controllers',
+    'module'     => 'presensi',
+    'controller' => 'riwayat',
+    'action'     => 'bulanan'
+));
+
+$router->add('/laporan/presensi/harian', array(
+    'namespace'  => 'Modules\Presensi\Controllers',
+    'module'     => 'presensi',
+    'controller' => 'riwayat',
+    'action'     => 'harian'
+));
+
+$router->add('/search/presensi/bulanan', array(
+    'namespace'  => 'Modules\Presensi\Controllers',
+    'module'     => 'presensi',
+    'controller' => 'riwayat',
+    'action'     => 'search_bulanan'
+));
+
+$router->add('/search/presensi/harian', array(
+    'namespace'  => 'Modules\Presensi\Controllers',
+    'module'     => 'presensi',
+    'controller' => 'riwayat',
+    'action'     => 'search_harian'
 ));

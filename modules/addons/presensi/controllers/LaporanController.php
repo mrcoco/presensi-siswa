@@ -14,13 +14,11 @@ namespace Modules\Presensi\Controllers;
 use Modules\Frontend\Controllers\ControllerBase;
 use Modules\History\Models\History;
 use Modules\Kelas\Models\Kelas;
-use Modules\Presensi\Models\Presensi;
 use Modules\Presensi\Plugin\Base64Url;
 use Modules\Presensi\Plugin\Helper;
 use Modules\Tahunajaran\Models\Tahunajaran;
 use Modules\Webconfig\Models\Webconfig;
 use Phalcon\Assets\Filters\Jsmin;
-use Phalcon\Http\Response;
 use Phalcon\Mvc\Model\ResultsetInterface;
 use Phalcon\Mvc\View;
 
