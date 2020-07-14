@@ -71,35 +71,29 @@ class LaporanController extends ControllerBase
 
     public function search_harianAction()
     {
-        $this->view->disable();
         if ($this->request->isPost() == true)
         {
             $kelas = $this->request->getPost("kelas");
             $tahun = $this->request->getPost("tahun_ajaran");
-            $tanggal = $this->request->getPost("tanggal");
-            $presensi = History::find([
-                'conditions' => 'kelas= ?1 AND tahun= ?2',
-                'bind' => [
-                    1 => $kelas,
-                    2 => $tahun,
-                ]
-            ]);
-            $arr = array();
-            foreach ($presensi as $siswa)
+            $tanggal    = $this->request->getPost("tanggal");
+            $mode       = $this->request->getPost("mode");
+            $arr = $this->presensiHarian($mode, $kelas, $tahun, $tanggal);
+            $this->view->setRenderLevel(
+                View::LEVEL_ACTION_VIEW
+            );
+            $this->view->setVar('tanggal', date('d M Y',strtotime($tanggal)));
+            $this->view->setVar('url_print',Base64Url::encode($tahun."/".$tanggal."/".$mode."/".$kelas));
+            $this->view->setVar('terlambat',$this->terlambat);
+            $this->view->setVar('pulangawal_jumat', $this->pulangawal_jumat);
+            $this->view->setVar('pulangawal_normal',$this->pulangawal_normal);
+            $this->view->setVar('arr',$arr);
+
+            if($mode == 0)
             {
-                $arr[] = [
-                    'nisn' => $siswa->nisn,
-                    'nama' => $siswa->nama,
-                    'sex'  => $siswa->sex,
-                    'presensi' => $siswa->getPresensi(
-                        ['conditions' => "kelas = '{$kelas}' AND tahun_ajaran='{$tahun}' AND tanggal = '{$tanggal}' "]),
-                ];
+                $this->view->pick('laporan/rekap_normal_harian');
+            }else{
+                $this->view->pick('laporan/rekap_sesi_harian');
             }
-//            $response = new Response();
-//            $response->setContentType('application/json', 'UTF-8');
-//            $response->setJsonContent($presensi);
-//            return $response->send();
-            echo $this->harianSesi($arr);
         }
     }
 
@@ -231,7 +225,7 @@ class LaporanController extends ControllerBase
     {
         $this->view->setVar('kelas',$this->kelas);
         $this->view->setVar('tahun',$this->tahun);
-        $this->view->pick("laporan_harian");
+        $this->view->pick("laporan/index_harian");
     }
 
     public function bulananAction()
@@ -261,7 +255,15 @@ class LaporanController extends ControllerBase
 
     public function cetak_harianAction()
     {
-
+        $geturl = Base64Url::decode($this->request->getQuery('url'));
+        list($tahun,$tanggal,$mode,$kelas) = explode("/",$geturl);
+        $arr = $this->presensiHarian($mode, $kelas, $tahun, $tanggal);
+        $this->view->setRenderLevel(
+            View::LEVEL_ACTION_VIEW
+        );
+        $this->view->setVar('tanggal', date('d M Y',strtotime($tanggal)));
+        $this->view->setVar('arr',$arr);
+        $this->view->pick("laporan/cetak_harian");
     }
 
     /**
@@ -307,5 +309,39 @@ class LaporanController extends ControllerBase
         $start = Helper::firstday($bulan);
         $end = Helper::lastDay($bulan);
         return Helper::workingDay($start, $end);
+    }
+
+    /**
+     * @param $mode
+     * @param $kelas
+     * @param $tahun
+     * @param $tanggal
+     * @return array
+     */
+    public function presensiHarian($mode, $kelas, $tahun, $tanggal)
+    {
+        if ($mode == 0) {
+            $isMode = 'AND sesi=0';
+        } else {
+            $isMode = 'AND sesi <> 0';
+        }
+        $presensi = History::find([
+            'conditions' => 'kelas= ?1 AND tahun= ?2',
+            'bind' => [
+                1 => $kelas,
+                2 => $tahun,
+            ]
+        ]);
+        $arr = array();
+        foreach ($presensi as $siswa) {
+            $arr[] = [
+                'nisn' => $siswa->nisn,
+                'nama' => $siswa->nama,
+                'sex' => $siswa->sex,
+                'presensi' => $siswa->getPresensi(
+                    ['conditions' => "kelas = '{$kelas}' AND tahun_ajaran='{$tahun}' AND tanggal = '{$tanggal}' " . $isMode]),
+            ];
+        }
+        return $arr;
     }
 }
