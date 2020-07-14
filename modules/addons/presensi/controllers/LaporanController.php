@@ -267,6 +267,9 @@ class LaporanController extends ControllerBase
             View::LEVEL_ACTION_VIEW
         );
         $this->view->setVar('tanggal', date('d M Y',strtotime($tanggal)));
+        $this->view->setVar('terlambat',$this->terlambat);
+        $this->view->setVar('pulangawal_jumat', $this->pulangawal_jumat);
+        $this->view->setVar('pulangawal_normal',$this->pulangawal_normal);
         $this->view->setVar('arr',$arr);
         if($mode == 0){
             $this->view->pick("laporan/cetak_normal_harian");
