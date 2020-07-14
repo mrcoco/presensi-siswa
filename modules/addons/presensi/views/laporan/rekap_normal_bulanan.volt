@@ -44,11 +44,13 @@
                         date_default_timezone_set('Asia/Jakarta');
                         if (isset($pres->jam_keluar)){
                             list($tg,$jam_keluar) = explode(" ",$pres->jam_keluar);
+                            $time_jam_keluar = new DateTime($pres->jam_keluar);
                          }else{
                             $jam_keluar = '00:00:00';
+                            $time_jam_keluar = new DateTime($pres->tanggal." ".$jam_keluar);
                          }
                         $time_jam_masuk = new DateTime($pres->jam_masuk);
-                        $time_jam_keluar = new DateTime($pres->jam_keluar);
+
                         $time_terlambat = new DateTime($pres->tanggal." ".$terlambat);
                         if(date('l',strtotime($pres->tanggal)) == 'Friday'){
                             $time_awal = new DateTime($pres->tanggal." ".$pulangawal_jumat);
@@ -56,19 +58,20 @@
                             $time_awal = new DateTime($pres->tanggal." ".$pulangawal_normal);
                         }
                     ?>
-                {% if(time_jam_masuk) > time_terlambat %}
-                    <b class="terlambat">{{ jam_masuk }}</b>
-                {% else %}
-                    {{ jam_masuk }}
-                {% endif %}
-                    <br>
-                {% if(time_jam_keluar) < time_awal %}
-                    <b class="terlambat">{{ jam_keluar }}</b>
-                {% else %}
-                    {{ jam_keluar }}
-                {% endif %}
+                    {% if(time_jam_masuk) > time_terlambat %}
+                        <b class="terlambat">{{ jam_masuk }}</b>
+                    {% else %}
+                        {{ jam_masuk }}
+                    {% endif %}
+                        <br>
+                    {% if(time_jam_keluar) < time_awal %}
+                        <b class="terlambat">{{ jam_keluar }}</b>
+                    {% else %}
+                        {{ jam_keluar }}
+                    {% endif %}
 
                 {% endif %}
+
                 {% if pres.status == '3' %}
                     I
                     {% set izin +=1 %}
