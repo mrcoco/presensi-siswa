@@ -33,6 +33,9 @@ class LaporanController extends ControllerBase
      * @var ResultsetInterface|void
      */
     private $kelas;
+    private $terlambat;
+    private $pulangawal_normal;
+    private $pulangawal_jumat;
 
     public function initialize()
     {
@@ -124,13 +127,27 @@ class LaporanController extends ControllerBase
             ];
         }
         $webconfig = Webconfig::find()->toArray();
+        foreach ($webconfig as $k => $v) {
+            if($v['name'] == 'jam_terlambat'){
+                $this->terlambat = $v['content'];
+            }
+            if($v['name'] == 'jam_pulang_awal_jumat'){
+                $this->pulangawal_jumat = $v['content'];
+            }
+            if($v['name'] == 'jam_pulang_awal_normal'){
+                $this->pulangawal_normal = $v['content'];
+            }
+        }
+
         $start = Helper::firstday($bulan);
         $end = Helper::lastDay($bulan);
         $work = Helper::workingDay($start,$end);
         $this->view->setRenderLevel(
             View::LEVEL_ACTION_VIEW
         );
-        $this->view->setVar('webconfig',$webconfig);
+        $this->view->setVar('terlambat',$this->terlambat);
+        $this->view->setVar('pulangawal_jumat', $this->pulangawal_jumat);
+        $this->view->setVar('pulangawal_normal',$this->pulangawal_normal);
         $this->view->setVar('count_work',count($work));
         $this->view->setVar('work',$work);
         $this->view->setVar('arr',$arr);
