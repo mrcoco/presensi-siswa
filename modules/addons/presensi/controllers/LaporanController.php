@@ -250,7 +250,12 @@ class LaporanController extends ControllerBase
         $this->view->setVar('count_work',count($work));
         $this->view->setVar('work',$work);
         $this->view->setVar('arr',$arr);
-        $this->view->pick("laporan/cetak_bulanan");
+        if($mode == 0){
+            $this->view->pick("laporan/cetak_normal_bulanan");
+        }else{
+            $this->view->pick("laporan/cetak_sesi_bulanan");
+        }
+
     }
 
     public function cetak_harianAction()
@@ -263,7 +268,11 @@ class LaporanController extends ControllerBase
         );
         $this->view->setVar('tanggal', date('d M Y',strtotime($tanggal)));
         $this->view->setVar('arr',$arr);
-        $this->view->pick("laporan/cetak_harian");
+        if($mode == 0){
+            $this->view->pick("laporan/cetak_normal_harian");
+        }else{
+            $this->view->pick("laporan/cetak_sesi_harian");
+        }
     }
 
     /**
