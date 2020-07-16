@@ -147,29 +147,7 @@ $(document).ready(function(){
 
     $('.date_time').mask('0000-00-00 00:00:00');
     $('.date').mask('0000-00-00');
-
-    // var input = document.getElementById("siswa_nama");
-    // var awesomplete = new Awesomplete(input, {
-    //     minChars: 3,
-    //     autoFirst: true
-    // });
-    //
-    // $("input").on("keyup", function(){
-    //     $.ajax({
-    //         url: '/siswa/search/' + this.value,
-    //         type: 'GET',
-    //         dataType: 'json'
-    //     })
-    //         .success(function(data) {
-    //             var list = [];
-    //             $.each(data, function(i,item) {
-    //                 list.push({label: item.name,value: item.id});
-    //             });
-    //             awesomplete.list = list;
-    //             awesomplete.sel
-    //         });
-    // });
-
+    
     $('input[name="siswa_nama"]').autoComplete({
         source: function(term, response){
             $.getJSON('/siswa/search/',{q:term}, function(data){ response(data); });

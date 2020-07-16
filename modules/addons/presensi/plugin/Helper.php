@@ -52,4 +52,11 @@ class Helper
         $first = $thn."-".$bln."-01";
         return $first;
     }
+
+    public static function workBulanan($bulan)
+    {
+        $start = self::firstday($bulan);
+        $end = self::lastDay($bulan);
+        return self::workingDay($start, $end);
+    }
 }
