@@ -20,7 +20,7 @@
 {#<link rel="stylesheet" href="{{ url("themes/admin/") }}assets/css/autocomplete.min.css" type="text/css"/>#}
 <link rel="stylesheet" href="{{ url("themes/admin/") }}trumbowyg/dist/ui/trumbowyg.min.css" type="text/css"/>
 <link rel="stylesheet" href="{{ url("themes/admin/") }}assets/css/jquery.auto-complete.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.min.css">
+<link rel="stylesheet" href="{{ url("themes/admin/") }}assets/css/bootstrap-datepicker3.min.css">
 
 {% if assets.exists("header") %}
     {{ assets.outputCss('header') }}

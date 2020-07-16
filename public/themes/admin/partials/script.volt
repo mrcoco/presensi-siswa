@@ -18,7 +18,7 @@
 {#<script src="{{ url("themes/admin/") }}assets/js/awesomplete.js" async></script>#}
 <script src="{{ url("themes/admin/") }}assets/js/jquery.mask.js"></script>
 <script src="{{ url("themes/admin/") }}assets/js/jquery.auto-complete.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/js/bootstrap-datepicker.min.js"></script>
+<script src="{{ url("themes/admin/") }}assets/js/bootstrap-datepicker.min.js"></script>
 
 
 {% if assets.exists("footer") %}
