@@ -75,7 +75,6 @@ class RiwayatController extends ControllerBase
         $bulan  = $this->request->getPost('bulan');
         $nisn   = $this->request->getPost('siswa_nisn');
         $arr = $this->personalBulanan($mode,$nisn,$bulan);
-
         $this->view->setRenderLevel(
             View::LEVEL_ACTION_VIEW
         );
@@ -123,6 +122,7 @@ class RiwayatController extends ControllerBase
         } else {
             $isMode = 'AND sesi <> 0';
         }
+        $work = Helper::workBulanan($bulan);
         $history = History::findFirst([
             'conditions' => "nisn= ?1",
             'bind' => [
@@ -136,7 +136,68 @@ class RiwayatController extends ControllerBase
             'presensi' => $history->getPresensi(
                 ['conditions' => "DATE_FORMAT(tanggal,'%m-%Y') = '{$bulan}' " . $isMode]),
         ];
+        $data = $history->getPresensi(
+            ['conditions' => "DATE_FORMAT(tanggal,'%m-%Y') = '{$bulan}' " . $isMode]);
+        $presensi = array();
+        foreach ($work as $k => $wk_tgl)
+        {
+            foreach ($data as $item) {
+                if($item->tanggal == $wk_tgl)
+                {
+                    if($item->foto_masuk){
+                        $img_masuk = "/upload/presensi/".$item->foto_masuk;
+                    }else{
+                        $img_masuk = "/themes/frontend/images/sma.png";
+                    }
+                    if($item->foto_keluar){
+                        $img_keluar = "/upload/presensi/".$item->foto_keluar;
+                    }else{
+                        $img_keluar = "/themes/frontend/images/sma.png";
+                    }
+                    if($item->jam_masuk)
+                    {
+                        $jammasuk = new \DateTime($item->jam_masuk);
+                        $jam_masuk = $jammasuk->format('H:m:s');
+                    }else{
+                        $jam_masuk ="";
+                    }
+                    if($item->jam_keluar)
+                    {
+                        $jamkeluar = new \DateTime($item->jam_keluar);
+                        $jam_keluar = $jammasuk->format('H:m:s');
+                    }else{
+                        $jam_keluar ="";
+                    }
 
-        return $arr;
+                    $presensi[$wk_tgl] = [
+                        'tanggal' => $wk_tgl,
+                        'nama'    => $arr['nama'],
+                        'nisn'    => $arr['nisn'],
+                        'sex'     => $arr['sex'],
+                        'jam_masuk'     => $jam_masuk,
+                        'jam_keluar'    => $jam_keluar,
+                        'foto_masuk'    => $img_masuk,
+                        'foto_keluar'   => $img_keluar,
+                        'status'        => $item->status
+                    ];
+
+                }else{
+                    $presensi[$k] = [
+                        'tanggal' => $wk_tgl,
+                        'nama'    => $arr['nama'],
+                        'nisn'    => $arr['nisn'],
+                        'sex'     => $arr['sex'],
+                        'jam_masuk'     => "",
+                        'jam_keluar'    => "",
+                        'foto_masuk'    => "/themes/frontend/images/sma.png",
+                        'foto_keluar'   => "/themes/frontend/images/sma.png",
+                        'status'        => ""
+                    ];
+
+                }
+            }
+        }
+
+        return $presensi;
     }
 }
