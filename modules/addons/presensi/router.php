@@ -216,3 +216,17 @@ $router->add('/search/presensi/harian', array(
     'controller' => 'riwayat',
     'action'     => 'search_harian'
 ));
+
+$router->add('/cetak/presensi/harian', array(
+    'namespace'  => 'Modules\Presensi\Controllers',
+    'module'     => 'presensi',
+    'controller' => 'riwayat',
+    'action'     => 'cetak_harian'
+));
+
+$router->add('/cetak/presensi/bulanan', array(
+    'namespace'  => 'Modules\Presensi\Controllers',
+    'module'     => 'presensi',
+    'controller' => 'riwayat',
+    'action'     => 'cetak_bulanan'
+));

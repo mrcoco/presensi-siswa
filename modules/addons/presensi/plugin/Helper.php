@@ -59,4 +59,25 @@ class Helper
         $end = self::lastDay($bulan);
         return self::workingDay($start, $end);
     }
+
+    /**
+     * @param array $array
+     * @param string $key
+     * @param string $get_value
+     * @return array|mixed
+     */
+    public static function search_by_value(array $array, $key, $get_value)
+    {
+        $result = array();
+        if($array){
+            foreach ($array as $k => $v)
+            {
+                if($v[$key] == $get_value){
+                    $result = $array[$k];
+                }
+            }
+        }
+
+        return $result;
+    }
 }

@@ -60,7 +60,7 @@ class RiwayatController extends ControllerBase
 
     public function harianAction()
     {
-
+        $this->view->pick("riwayat/index_harian");
     }
 
     public function bulananAction()
@@ -83,36 +83,48 @@ class RiwayatController extends ControllerBase
         if($mode == 0){
             $this->view->pick('riwayat/riwayat_normal_bulanan');
         }else{
-            $this->view->pick('riwayat/riwayat_normal_bulanan');
+            $this->view->pick('riwayat/riwayat_sesi_bulanan');
         }
-
     }
 
-    public function personalHarian($mode,$nisn,$tanggal)
+    public function search_harianAction()
+    {
+        $mode   = $this->request->getPost('mode');
+        $siswa  = $this->request->getPost('siswa_id');
+        $start  = $this->request->getPost('start');
+        $end  = $this->request->getPost('end');
+        $nisn   = $this->request->getPost('siswa_nisn');
+        $arr = $this->personalHarian($mode,$nisn,$start,$end);
+        $this->view->setRenderLevel(
+            View::LEVEL_ACTION_VIEW
+        );
+        $this->view->setVar('work',Helper::workBulanan($bulan));
+        $this->view->setVar('arr',$arr);
+        if($mode == 0){
+            $this->view->pick('riwayat/riwayat_normal_harian');
+        }else{
+            $this->view->pick('riwayat/riwayat_sesi_harian');
+        }
+    }
+
+    public function personalHarian($mode,$nisn,$start,$end)
     {
         if ($mode == 0) {
             $isMode = 'AND sesi=0';
         } else {
             $isMode = 'AND sesi <> 0';
         }
-        $presensi = History::find([
+        $work = Helper::workingDay($start,$end);
+        $siswa = History::find([
             'conditions' => 'nisn= ?1',
             'bind' => [
                 1 => $nisn,
             ]
         ]);
-        $arr = array();
-        foreach ($presensi as $siswa) {
-            $arr[] = [
-                'nisn' => $siswa->nisn,
-                'nama' => $siswa->nama,
-                'sex' => $siswa->sex,
-                'presensi' => $siswa->getPresensi(
-                    ['conditions' => "tanggal = '{$tanggal}' " . $isMode]),
-            ];
-        }
-        return $arr;
+        $data = $siswa->getPresensi(
+            ['conditions' => "tanggal BETWEEN '{$start}' AND '{$end}' " . $isMode]);
 
+        return $this->presensiNormalResult($work, $data, $siswa);
     }
 
     public function personalBulanan($mode, $nisn, $bulan)
@@ -129,75 +141,117 @@ class RiwayatController extends ControllerBase
                 1 => $nisn,
             ]
         ]);
-        $arr = [
-            'nisn' => $history->nisn,
-            'nama' => $history->nama,
-            'sex' => $history->sex,
-            'presensi' => $history->getPresensi(
-                ['conditions' => "DATE_FORMAT(tanggal,'%m-%Y') = '{$bulan}' " . $isMode]),
-        ];
+
         $data = $history->getPresensi(
             ['conditions' => "DATE_FORMAT(tanggal,'%m-%Y') = '{$bulan}' " . $isMode]);
+        if($mode == 0){
+            $result = $this->presensiNormalResult($work, $data, $history);
+        }else{
+            $result = $this->presensiSesiResult($work, $data, $history);
+            //$result = $data;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array $work
+     * @param $data
+     * @param $history
+     * @return array
+     * @throws \Exception
+     */
+    public function presensiNormalResult(array $work, $data, $history)
+    {
         $presensi = array();
-        foreach ($work as $k => $wk_tgl)
-        {
+        foreach ($work as $k => $wk_tgl) {
             foreach ($data as $item) {
-                if($item->tanggal == $wk_tgl)
-                {
-                    if($item->foto_masuk){
-                        $img_masuk = "/upload/presensi/".$item->foto_masuk;
-                    }else{
+                if ($item->tanggal == $wk_tgl) {
+                    if ($item->foto_masuk) {
+                        $img_masuk = "/upload/presensi/" . $item->foto_masuk;
+                    } else {
                         $img_masuk = "/themes/frontend/images/sma.png";
                     }
-                    if($item->foto_keluar){
-                        $img_keluar = "/upload/presensi/".$item->foto_keluar;
-                    }else{
+                    if ($item->foto_keluar) {
+                        $img_keluar = "/upload/presensi/" . $item->foto_keluar;
+                    } else {
                         $img_keluar = "/themes/frontend/images/sma.png";
                     }
-                    if($item->jam_masuk)
-                    {
+                    if ($item->jam_masuk) {
                         $jammasuk = new \DateTime($item->jam_masuk);
                         $jam_masuk = $jammasuk->format('H:m:s');
-                    }else{
-                        $jam_masuk ="";
+                    } else {
+                        $jam_masuk = "";
                     }
-                    if($item->jam_keluar)
-                    {
+                    if ($item->jam_keluar) {
                         $jamkeluar = new \DateTime($item->jam_keluar);
-                        $jam_keluar = $jammasuk->format('H:m:s');
-                    }else{
-                        $jam_keluar ="";
+                        $jam_keluar = $jamkeluar->format('H:m:s');
+                    } else {
+                        $jam_keluar = "";
                     }
 
                     $presensi[$wk_tgl] = [
                         'tanggal' => $wk_tgl,
-                        'nama'    => $arr['nama'],
-                        'nisn'    => $arr['nisn'],
-                        'sex'     => $arr['sex'],
-                        'jam_masuk'     => $jam_masuk,
-                        'jam_keluar'    => $jam_keluar,
-                        'foto_masuk'    => $img_masuk,
-                        'foto_keluar'   => $img_keluar,
-                        'status'        => $item->status
+                        'nama' => $history->nama,
+                        'nisn' => $history->nisn,
+                        'sex' => $history->sex,
+                        'jam_masuk' => $jam_masuk,
+                        'jam_keluar' => $jam_keluar,
+                        'foto_masuk' => $img_masuk,
+                        'foto_keluar' => $img_keluar,
+                        'status' => $item->status
                     ];
-
-                }else{
-                    $presensi[$k] = [
+                    break;
+                } else {
+                    $presensi[$wk_tgl] = [
                         'tanggal' => $wk_tgl,
-                        'nama'    => $arr['nama'],
-                        'nisn'    => $arr['nisn'],
-                        'sex'     => $arr['sex'],
-                        'jam_masuk'     => "",
-                        'jam_keluar'    => "",
-                        'foto_masuk'    => "/themes/frontend/images/sma.png",
-                        'foto_keluar'   => "/themes/frontend/images/sma.png",
-                        'status'        => ""
+                        'nama' => $history->nama,
+                        'nisn' => $history->nisn,
+                        'sex' => $history->sex,
+                        'jam_masuk' => "",
+                        'jam_keluar' => "",
+                        'foto_masuk' => "/themes/frontend/images/sma.png",
+                        'foto_keluar' => "/themes/frontend/images/sma.png",
+                        'status' => ""
                     ];
 
                 }
             }
         }
-
         return $presensi;
+    }
+
+    /**
+     * @param array $work
+     * @param $data
+     * @param $history
+     * @return array
+     * @throws \Exception
+     */
+    public function presensiSesiResult(array $work, $data, $history)
+    {
+        $presensi = array();
+        $result = array();
+        foreach ($data as $item){
+            $jammasuk = new \DateTime($item->jam_masuk);
+            $jam_masuk = $jammasuk->format('H:m:s');
+            $presensi[] = [
+                'tanggal' => $item->tanggal,
+                'nama' => $history->nama,
+                'nisn' => $history->nisn,
+                'sex' => $history->sex,
+                'sesi' => $item->sesi,
+                'jam_masuk' => $jam_masuk,
+                'status'    => $item->status,
+            ];
+        }
+        $result= [
+            'tanggal' => $item->tanggal,
+            'nama' => $history->nama,
+            'nisn' => $history->nisn,
+            'sex' => $history->sex,
+        ];
+        $result['presensi'] = $presensi;
+        return $result;
     }
 }

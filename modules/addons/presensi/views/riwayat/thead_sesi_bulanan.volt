@@ -1,18 +1,17 @@
-<thead>
-<tr>
+<thead >
+<tr class="text-center">
     <th rowspan='2' valign='top'>NO</th>
     <th rowspan='2' valign='top'>NAMA</th>
     <th rowspan='2' valign='top'>NIS</th>
     <th rowspan='2' valign='top'>JK</th>
-    <th colspan='2' class="text-center">Tanggal: {{ tanggal }}</th>
+    <th rowspan="2" class="text-center">TANGGAL</th>
+    <th rowspan="2" class="text-center">JAM MASUK</th>
     <th colspan='3'>JUMLAH</th>
     <th rowspan='2' valign='top'>KET</th>
 </tr>
 <tr>
-    <th valign='top'>Jam Datang</th>
-    <th valign='top'>Jam Pulang</th>
-    <th>I</th>
-    <th>S</th>
-    <th>A</th>
+    <th rowspan='2'>I</th>
+    <th rowspan='2'>S</th>
+    <th rowspan='2'>A</th>
 </tr>
 </thead>
