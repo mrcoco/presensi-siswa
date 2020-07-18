@@ -6,8 +6,8 @@
     <div class="row">
         <div class="col-md-12">
             <table id="presensi-bulanan" class="table-bordered table-condensed">
-                {% include 'laporan/thead_normal_bulanan.volt' %}
-                {% include 'laporan/tbody_normal_bulanan.volt' %}
+                {% include 'laporan/cetak_thead_bulanan.volt' %}
+                {% include 'laporan/cetak_tbody_normal_bulanan.volt' %}
             </table>
         </div>
     </div>
