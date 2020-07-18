@@ -18,10 +18,9 @@
             <tr>
                 <th data-column-id="no" data-type="numeric" data-width="5%" data-sortable="false">no</th>
                 <th data-column-id="judul" data-sortable="false">Judul</th>
-	<th data-column-id="tanggal" data-sortable="false">Tanggal</th>
-	<th data-column-id="content" data-sortable="false">Content</th>
-	<th data-column-id="status" data-sortable="false">Status</th>
-	
+	            <th data-column-id="tanggal" data-sortable="false">Tanggal</th>
+	            <th data-column-id="content" data-sortable="false">Content</th>
+	            <th data-column-id="status" data-formatter="published" data-sortable="false">Status</th>
                 <th data-column-id="commands" data-formatter="commands" data-sortable="false">Action</th>
             </tr>
             </thead>
@@ -43,21 +42,24 @@
                     <input type="hidden" class="form-control" name="hidden_id" id="hidden_id" >
                     </div>
                     <div class="form-group" >
-	<label>Judul</label>
-	<input type="text" class="form-control" name="judul" id="judul" >
-	</div>
-	<div class="form-group" >
-	<label>Tanggal</label>
-	<input type="text" class="form-control" name="tanggal" id="tanggal" >
-	</div>
-	<div class="form-group" >
-	<label>Content</label>
-	<input type="text" class="form-control" name="content" id="content" >
-	</div>
-	<div class="form-group" >
-	<label>Status</label>
-	<input type="text" class="form-control" name="status" id="status" >
-	</div>
+                    <label>Judul</label>
+                    <input type="text" class="form-control" name="judul" id="judul" >
+                    </div>
+                    <div class="form-group" >
+                    <label>Tanggal</label>
+                    <input type="text" class="form-control date" name="tanggal" id="tanggal" placeholder="yyyy-mm-dd">
+                    </div>
+                    <div class="form-group" >
+                    <label>Content</label>
+                    <input type="text" class="form-control" name="content" id="content" >
+                    </div>
+                    <div class="form-group" >
+                    <label>Status</label>
+                        <select class="form-control" name="status" id="status">
+                            <option value="1">Active</option>
+                            <option value="0">Non Active</option>
+                        </select>
+                    </div>
 	
                     <div class="form-group" >
                         <div class="row">

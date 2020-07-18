@@ -44,7 +44,7 @@ class KelasController extends ControllerBase
         $searchPhrase = $this->request->getPost('searchPhrase');
         $sort = $this->request->getPost('sort');
         if ($searchPhrase != '') {
-            $arProp['conditions'] = "title LIKE ?1 OR slug LIKE ?1 OR content LIKE ?1";
+            $arProp['conditions'] = "kelas LIKE ?1";
             $arProp['bind'] = array(
                 1 => "%".$searchPhrase."%"
             );

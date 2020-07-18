@@ -44,7 +44,7 @@ class LiburController extends ControllerBase
         $searchPhrase = $this->request->getPost('searchPhrase');
         $sort = $this->request->getPost('sort');
         if ($searchPhrase != '') {
-            $arProp['conditions'] = "title LIKE ?1 OR slug LIKE ?1 OR content LIKE ?1";
+            $arProp['conditions'] = "tanggal LIKE ?1 OR keterangan LIKE ?1";
             $arProp['bind'] = array(
                 1 => "%".$searchPhrase."%"
             );
@@ -67,7 +67,7 @@ class LiburController extends ControllerBase
                 'no'    => $no,
                 'id'    => $item->id,
                 'tanggal' => $item->tanggal,
-	'keterangan' => $item->keterangan,
+	            'keterangan' => $item->keterangan,
 	
                 'created' => $item->created
             );

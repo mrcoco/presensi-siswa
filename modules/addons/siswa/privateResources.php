@@ -11,7 +11,8 @@ return new Config([
             'edit',
             'create',
             'get',
-            'delete'
+            'delete',
+            'batch'
         ],
     ]
 ]);

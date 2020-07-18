@@ -44,7 +44,7 @@ class HistoryController extends ControllerBase
         $searchPhrase = $this->request->getPost('searchPhrase');
         $sort = $this->request->getPost('sort');
         if ($searchPhrase != '') {
-            $arProp['conditions'] = "title LIKE ?1 OR slug LIKE ?1 OR content LIKE ?1";
+            $arProp['conditions'] = "nama LIKE ?1 OR kelas LIKE ?1 OR nisn LIKE ?1";
             $arProp['bind'] = array(
                 1 => "%".$searchPhrase."%"
             );

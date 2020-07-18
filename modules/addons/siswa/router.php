@@ -83,3 +83,10 @@ $router->add('/siswa/unpublish', array(
     'controller' => 'siswa',
     'action'     => 'unpublish'
 ));
+
+$router->add('/siswa/batch', array(
+    'namespace'  => 'Modules\Siswa\Controllers',
+    'module'     => 'siswa',
+    'controller' => 'siswa',
+    'action'     => 'batch',
+));

@@ -18,7 +18,7 @@
             <tr>
                 <th data-column-id="no" data-type="numeric" data-width="5%" data-sortable="false">no</th>
                 <th data-column-id="tanggal" data-sortable="false">Tanggal</th>
-	<th data-column-id="keterangan" data-sortable="false">Keterangan</th>
+	            <th data-column-id="keterangan" data-sortable="false">Keterangan</th>
 	
                 <th data-column-id="commands" data-formatter="commands" data-sortable="false">Action</th>
             </tr>

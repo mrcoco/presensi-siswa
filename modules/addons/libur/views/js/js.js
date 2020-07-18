@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    var url_path = "http://presensi/libur/";
+    var url_path = "/libur/";
     var libur_grid = $("#grid-libur").bootgrid({
         ajax: true,
         url: url_path+"list",

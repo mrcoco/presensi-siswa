@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    var url_path = "http://presensi/pengumuman/";
+    var url_path = "/pengumuman/";
     var pengumuman_grid = $("#grid-pengumuman").bootgrid({
         ajax: true,
         url: url_path+"list",
@@ -15,9 +15,9 @@ $(document).ready(function(){
             "published": function(column, row)
             {
                 if(row.publish == 1){
-                    return "Yes";
+                    return "Active";
                 }else{
-                    return "No";
+                    return "Non Active";
                 }
             },
             "commands": function(column, row)
@@ -84,10 +84,14 @@ $(document).ready(function(){
             $('#mypengumuman .modal-title').html('Edit pengumuman '+e.data("row-id"));
             $.getJSON(url_path+"get/?id=" + e.data("row-id"), function (data) {
                 $('#hidden_id').val(data.id);
-                 $('#judul').val(data.judul);
-	 $('#tanggal').val(data.tanggal);
-	 $('#content').val(data.content);
-	 $('#status').val(data.status);
+                $('#judul').val(data.judul);
+                $('#tanggal').val(data.tanggal);
+                $('#content').val(data.content);
+                $('#status option').each(function() {
+                    if($(this).val() == data.status) {
+                        $(this).prop("selected", true);
+                    }
+                });
 	
             });
         }else{
@@ -107,5 +111,7 @@ $(document).ready(function(){
         mesg["msg"] = "#pengumuman "+e._id+" "+e.msg;
         notif_show(mesg);
     }
+
+    $('.date').mask('0000-00-00');
 
 });

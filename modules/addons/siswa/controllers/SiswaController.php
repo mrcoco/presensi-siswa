@@ -85,7 +85,7 @@ class SiswaController extends ControllerBase
         $searchPhrase = $this->request->getPost('searchPhrase');
         $sort = $this->request->getPost('sort');
         if ($searchPhrase != '') {
-            $arProp['conditions'] = "title LIKE ?1 OR slug LIKE ?1 OR content LIKE ?1";
+            $arProp['conditions'] = "nama LIKE ?1 OR nisn LIKE ?1 OR kelas LIKE ?1";
             $arProp['bind'] = array(
                 1 => "%".$searchPhrase."%"
             );
@@ -128,6 +128,28 @@ class SiswaController extends ControllerBase
         $response->setContentType('application/json', 'UTF-8');
         $response->setJsonContent($data);
         return $response->send();
+    }
+
+    public function importAction()
+    {
+
+    }
+
+    public function uploadAction()
+    {
+        $this->view->disable();
+
+    }
+
+    public function batchAction()
+    {
+        $siswa = Siswa::find();
+        $sql ="";
+        foreach ($siswa as $item)
+        {
+            $sql .= "INSERT INTO `users` (`name`,`profilesId`,`email`,`password`,`banned`,`suspended`,`active`) VALUES ('".$item->nama."','2','".$item->nisn."','".$this->security->hash($item->pass)."','N','N','Y');<br>";
+        }
+        echo $sql;
     }
 
     public function createAction()

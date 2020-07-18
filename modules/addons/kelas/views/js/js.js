@@ -14,10 +14,10 @@ $(document).ready(function(){
             },
             "published": function(column, row)
             {
-                if(row.publish == 1){
-                    return "Yes";
+                if(row.status == 1){
+                    return "Active";
                 }else{
-                    return "No";
+                    return "Non Active";
                 }
             },
             "commands": function(column, row)
@@ -84,9 +84,8 @@ $(document).ready(function(){
             $('#mykelas .modal-title').html('Edit kelas '+e.data("row-id"));
             $.getJSON(url_path+"get/?id=" + e.data("row-id"), function (data) {
                 $('#hidden_id').val(data.id);
-                 $('#nama').val(data.nama);
-	 $('#status').val(data.status);
-	
+                $('#nama').val(data.nama);
+                $('#status').val(data.status);
             });
         }else{
             $('#mykelas .modal-title').html('Create New kelas ');

@@ -6,7 +6,7 @@ $(document).ready(function(){
         selection: true,
         multiSelect: true,
         templates: {
-            header:"<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-6 actionBar\"><div class=\"{{css.search}}\"></div></div><div class=\"col-sm-6\"><div class=\"{{css.actions}}\"></div> <div class='btn btn-primary' id='create' class='command-add'> <span class=\"fa fa-plus-square-o\"></span> New Tahunajaran</div></div></div></div>",
+            header:"<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\"><div class=\"col-sm-6 actionBar\"><div class=\"{{css.search}}\"></div></div><div class=\"col-sm-6\"><div class=\"{{css.actions}}\"></div> <div class='btn btn-primary' id='create' class='command-add'> <span class=\"fa fa-plus-square-o\"></span> New Tahun ajaran</div></div></div></div>",
         },
         formatters: {
             "file" : function (column, row) {
@@ -14,10 +14,10 @@ $(document).ready(function(){
             },
             "published": function(column, row)
             {
-                if(row.publish == 1){
-                    return "Yes";
+                if(row.status == 1){
+                    return "Active";
                 }else{
-                    return "No";
+                    return "Non Active";
                 }
             },
             "commands": function(column, row)
@@ -84,9 +84,12 @@ $(document).ready(function(){
             $('#mytahunajaran .modal-title').html('Edit tahunajaran '+e.data("row-id"));
             $.getJSON(url_path+"get/?id=" + e.data("row-id"), function (data) {
                 $('#hidden_id').val(data.id);
-                 $('#tahun').val(data.tahun);
-	 $('#status').val(data.status);
-	
+                $('#tahun').val(data.tahun);
+                $('#status option').each(function() {
+                    if($(this).val() == data.status) {
+                        $(this).prop("selected", true);
+                    }
+                });
             });
         }else{
             $('#mytahunajaran .modal-title').html('Create New tahunajaran ');

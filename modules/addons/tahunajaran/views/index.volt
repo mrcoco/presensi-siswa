@@ -1,7 +1,7 @@
 <div class="col-md-12 col-sm-12">
     <div class="box">
         <header class="bg-alizarin text-white">
-            <h4>Manage Tahunajaran</h4>
+            <h4>Manage Tahun Ajaran</h4>
             <!-- begin box-tools -->
             <div class="box-tools">
                 <a class="fa fa-fw fa-minus" href="#" data-box="collapse"></a>
@@ -18,9 +18,8 @@
             <tr>
                 <th data-column-id="no" data-type="numeric" data-width="5%" data-sortable="false">no</th>
                 <th data-column-id="tahun" data-sortable="false">Tahun</th>
-	<th data-column-id="status" data-sortable="false">Status</th>
-	
-                <th data-column-id="commands" data-formatter="commands" data-sortable="false">Action</th>
+	            <th data-column-id="status" data-width="15%" data-formatter="published" data-sortable="false">Status</th>
+                <th data-column-id="commands" data-width="15%" data-formatter="commands" data-sortable="false">Action</th>
             </tr>
             </thead>
         </table>
@@ -41,13 +40,16 @@
                     <input type="hidden" class="form-control" name="hidden_id" id="hidden_id" >
                     </div>
                     <div class="form-group" >
-	<label>Tahun</label>
-	<input type="text" class="form-control" name="tahun" id="tahun" >
-	</div>
-	<div class="form-group" >
-	<label>Status</label>
-	<input type="text" class="form-control" name="status" id="status" >
-	</div>
+                    <label>Tahun</label>
+                    <input type="text" class="form-control" name="tahun" id="tahun" >
+                    </div>
+                    <div class="form-group" >
+                        <label>Status</label>
+                        <select class="form-control" name="status" id="status">
+                            <option value="1">Active</option>
+                            <option value="0">Non Active</option>
+                        </select>
+                    </div>
 	
                     <div class="form-group" >
                         <div class="row">

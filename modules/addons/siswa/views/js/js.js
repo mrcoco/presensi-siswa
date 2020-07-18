@@ -84,10 +84,10 @@ $(document).ready(function(){
             $('#mysiswa .modal-title').html('Edit siswa '+e.data("row-id"));
             $.getJSON(url_path+"get/?id=" + e.data("row-id"), function (data) {
                 $('#hidden_id').val(data.id);
-                 $('#nama').val(data.nama);
-	 $('#nisn').val(data.nisn);
-	 $('#kelas').val(data.kelas);
-	 $('#pass').val(data.pass);
+                $('#nama').val(data.nama);
+                $('#nisn').val(data.nisn);
+                $('#kelas').val(data.kelas);
+                $('#pass').val(data.pass);
 	
             });
         }else{
