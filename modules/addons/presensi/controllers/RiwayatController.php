@@ -13,6 +13,7 @@ namespace Modules\Presensi\Controllers;
 
 use Modules\Frontend\Controllers\ControllerBase;
 use Modules\History\Models\History;
+use Modules\Presensi\Plugin\Base64Url;
 use Modules\Presensi\Plugin\Helper;
 use Modules\Webconfig\Models\Webconfig;
 use Phalcon\Mvc\View;
@@ -75,10 +76,12 @@ class RiwayatController extends ControllerBase
         $bulan  = $this->request->getPost('bulan');
         $nisn   = $this->request->getPost('siswa_nisn');
         $arr = $this->personalBulanan($mode,$nisn,$bulan);
+
         $this->view->setRenderLevel(
             View::LEVEL_ACTION_VIEW
         );
         $this->view->setVar('work',Helper::workBulanan($bulan));
+        $this->view->setVar('url_print',Base64Url::encode($bulan."/".$mode."/".$nisn));
         $this->view->setVar('arr',$arr);
         if($mode == 0){
             $this->view->pick('riwayat/riwayat_normal_bulanan');
@@ -98,12 +101,49 @@ class RiwayatController extends ControllerBase
         $this->view->setRenderLevel(
             View::LEVEL_ACTION_VIEW
         );
-        $this->view->setVar('work',Helper::workBulanan($bulan));
+        $this->view->setVar('work',Helper::workingDay($start,$end));
+        $this->view->setVar('url_print',Base64Url::encode($start."/".$end."/".$mode."/".$nisn));
         $this->view->setVar('arr',$arr);
         if($mode == 0){
             $this->view->pick('riwayat/riwayat_normal_harian');
         }else{
             $this->view->pick('riwayat/riwayat_sesi_harian');
+        }
+    }
+
+    public function cetak_harianAction()
+    {
+        $geturl = Base64Url::decode($this->request->getQuery('url'));
+        list($start,$end,$mode,$nisn) = explode("/",$geturl);
+        $arr = $this->personalHarian($mode,$nisn,$start,$end);
+
+        $this->view->setRenderLevel(
+            View::LEVEL_ACTION_VIEW
+        );
+        $this->view->setVar('work',Helper::workingDay($start,$end));
+        $this->view->setVar('arr',$arr);
+        if($mode == 0){
+            $this->view->pick('riwayat/cetak_normal_harian');
+        }else{
+            $this->view->pick('riwayat/cetak_sesi_harian');
+        }
+    }
+
+    public function cetak_bulananAction()
+    {
+        $geturl = Base64Url::decode($this->request->getQuery('url'));
+        list($bulan,$mode,$nisn) = explode("/",$geturl);
+        $arr = $this->personalBulanan($mode,$nisn,$bulan);
+
+        $this->view->setRenderLevel(
+            View::LEVEL_ACTION_VIEW
+        );
+        $this->view->setVar('work',Helper::workBulanan($bulan));
+        $this->view->setVar('arr',$arr);
+        if($mode == 0){
+            $this->view->pick('riwayat/cetak_normal_bulanan');
+        }else{
+            $this->view->pick('riwayat/cetak_sesi_bulanan');
         }
     }
 
@@ -115,16 +155,20 @@ class RiwayatController extends ControllerBase
             $isMode = 'AND sesi <> 0';
         }
         $work = Helper::workingDay($start,$end);
-        $siswa = History::find([
+        $siswa = History::findFirst([
             'conditions' => 'nisn= ?1',
             'bind' => [
                 1 => $nisn,
             ]
         ]);
         $data = $siswa->getPresensi(
-            ['conditions' => "tanggal BETWEEN '{$start}' AND '{$end}' " . $isMode]);
+            ['conditions' => "(tanggal BETWEEN '{$start}' AND '{$end}') " . $isMode]);
+        if($mode == 0){
+            return $this->presensiNormalResult($work, $data, $siswa);
+        }else{
+            return $this->presensiSesiResult($work, $data, $siswa);
+        }
 
-        return $this->presensiNormalResult($work, $data, $siswa);
     }
 
     public function personalBulanan($mode, $nisn, $bulan)
@@ -231,7 +275,6 @@ class RiwayatController extends ControllerBase
     public function presensiSesiResult(array $work, $data, $history)
     {
         $presensi = array();
-        $result = array();
         foreach ($data as $item){
             $jammasuk = new \DateTime($item->jam_masuk);
             $jam_masuk = $jammasuk->format('H:m:s');
@@ -245,13 +288,41 @@ class RiwayatController extends ControllerBase
                 'status'    => $item->status,
             ];
         }
-        $result= [
-            'tanggal' => $item->tanggal,
-            'nama' => $history->nama,
-            'nisn' => $history->nisn,
-            'sex' => $history->sex,
-        ];
-        $result['presensi'] = $presensi;
-        return $result;
+        $res = array();
+        foreach($work as $v => $wk)
+        {
+            for($i=1;$i<=5;$i++)
+            {
+                foreach($presensi as $pres)
+                {
+                    if($pres['tanggal'] == $wk)
+                    {
+                        if($pres['sesi'] == $i)
+                        {
+                            $res[$wk]['tanggal'] = $wk;
+                            $res[$wk]['nama'] = $history->nama;
+                            $res[$wk]['nisn'] = $history->nisn;
+                            $res[$wk]['sex'] = $history->sex;
+                            $res[$wk]['sesi'][$i]= $pres['jam_masuk'];
+                            $res[$wk]['status'] = $pres['status'];
+                            break;
+                        }else{
+                            $res[$wk]['tanggal'] = $wk;
+                            $res[$wk]['nama'] = $history->nama;
+                            $res[$wk]['nisn'] = $history->nisn;
+                            $res[$wk]['sex'] = $history->sex;
+                            $res[$wk]['sesi'][$i]= "";
+                        }
+                    }else{
+                        $res[$wk]['tanggal'] = $wk;
+                        $res[$wk]['nama'] = $history->nama;
+                        $res[$wk]['nisn'] = $history->nisn;
+                        $res[$wk]['sex'] = $history->sex;
+                        $res[$wk]['sesi'][$i]= "";
+                    }
+                }
+            }
+        }
+        return $res;
     }
 }

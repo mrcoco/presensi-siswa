@@ -7,7 +7,7 @@
     }
 </style>
 <div class="cetak">
-    <a class="btn btn-primary" href="{{ url("cetak/presensi/bulanan?url=") }}{{ url_print }}" target="_blank"><i class="fa fa-print"></i> Cetak</a>
+    <a class="btn btn-primary" href="{{ url("cetak/presensi/harian?url=") }}{{ url_print }}" target="_blank"><i class="fa fa-print"></i> Cetak</a>
 </div>
 <table id="presensi-bulanan" class="table table-condensed table-hover table-striped">
     {% include 'riwayat/thead_normal_bulanan.volt' %}

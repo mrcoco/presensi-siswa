@@ -22,12 +22,16 @@
                 </div>
 
                 <div class="form-group" >
-                    <label>Bulan</label>
-                    <input autocomplete="off"  type="text" name="bulan" class="form-control bulan" placeholder="yyyy-mm">
+                    <label>Tanggal</label>
+                    <input autocomplete="off"  type="text" name="start" class="form-control date" placeholder="yyyy-mm-dd">
+                </div>
+                <div class="form-group" >
+                    <label>s/d </label>
+                    <input autocomplete="off"  type="text" name="end" class="form-control date" placeholder="yyyy-mm-dd">
                 </div>
 
                 <div class="form-group" >
-                    <label>Mode Presensi</label>
+                    <label>Mode </label>
                     <select class="form-control" name="mode" id="mode" >
                         <option value="0">Datang Pulang</option>
                         <option value="1">Sesi</option>
