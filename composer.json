@@ -34,7 +34,7 @@
         "swiftmailer/swiftmailer": "^5.4",
         "raiym/instagram-php-scraper": "^0.5.7",
         "pusher/pusher-php-server": "^2.6",
-        "ext-apcu": "*"
+        "phpoffice/phpspreadsheet": "^1.14"
     },
     "extra": {
         "installer-paths": {
