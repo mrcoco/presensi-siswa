@@ -12,7 +12,9 @@ return new Config([
             'create',
             'get',
             'delete',
-            'batch'
+            'batch',
+            'import',
+            'upload'
         ],
     ]
 ]);

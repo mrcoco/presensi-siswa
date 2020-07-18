@@ -108,4 +108,16 @@ $(document).ready(function(){
         notif_show(mesg);
     }
 
+    $("#importForm").ajaxForm({
+        url: url_path+'upload',
+        type: 'post',
+        beforeSubmit:  function(data) {
+            $('#import').html("Loading...");
+        },
+        success: function(data) {
+            myAlert(data);
+            $('#import').html("<i class=\"fa fa-upload\"></i>  Import");
+        }
+    });
+
 });

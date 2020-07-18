@@ -17,9 +17,11 @@ use Modules\History\Models\History;
 use Modules\Kelas\Models\Kelas;
 use Modules\Siswa\Models\Siswa;
 use Modules\Frontend\Controllers\ControllerBase;
+use Modules\Siswa\Plugin\Batch;
 use Modules\Siswa\Plugin\Publish;
 use Modules\Tahunajaran\Models\Tahunajaran;
 use Modules\User\Models\Users;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class SiswaController extends ControllerBase
 {
@@ -132,14 +134,35 @@ class SiswaController extends ControllerBase
 
     public function importAction()
     {
-
+        $this->view->pick("import");
     }
 
     public function uploadAction()
     {
         $this->view->disable();
+        if($this->request->hasFiles())
+        {
+            //$location = $this->config->application->uploadDir;
+            $file = $this->config->application->uploadDir."data.xlsx";
+            foreach ($this->request->getUploadedFiles() as $uploadedFile) {
+                $uploadedFile->moveTo($file);
+            }
+            $this->batchInsert($file);
 
+            $alert = "sukses";
+            $msg = "Import Siswa Success";
+
+        }else{
+            $alert = "error";
+            $msg = "Import Siswa Gagal";
+        }
+        $response = new \Phalcon\Http\Response();
+        $response->setContentType('application/json', 'UTF-8');
+        $response->setJsonContent(array('_id' => "excel",'alert' => $alert, 'msg' => $msg, 'files' => $_FILES ));
+        return $response->send();
     }
+
+
 
     public function batchAction()
     {
@@ -290,5 +313,38 @@ class SiswaController extends ControllerBase
             ]);
             $history->save();
         }
+    }
+
+    /**
+     * @param $file
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     */
+    public function batchInsert($file)
+    {
+        $reader = IOFactory::createReaderForFile($file);
+        $reader->setReadDataOnly(true);
+        $sheet = $reader->load($file);
+        $excel = $sheet->getActiveSheet()->toArray();
+        $sql = [];
+        $his =[];
+        $user = [];
+        for ($i = 1; $i < count($excel); $i++) {
+            $no = $excel[$i][0];
+            $nisn = $excel[$i][1];
+            $nama = $excel[$i][2];
+            $sex = $excel[$i][3];
+            $kelas = $excel[$i][4];
+            $pass = $this->security->hash($nisn);
+            $sql[] = [$nisn, $nama, $sex, $kelas, $nisn];
+            $his[] = [$nama,$nisn,  $sex, $kelas, $this->tahun->tahun];
+            $user[] = [$nama,'2',$nisn,$pass, 'N', 'N', 'Y'];
+        }
+
+        $siswa = new Batch("siswa");
+        $siswa->setRows(["nisn", "nama", "sex", "kelas", "pass"])->setValues($sql)->insert();
+        $history = new Batch("history");
+        $history->setRows(["nama","nisn", "sex", "kelas", "tahun"])->setValues($his)->insert();
+        $users = new Batch("users");
+        $users->setRows(['name','profilesId','email','password','banned', 'suspended','active' ])->setValues($user)->insert();
     }
 }

@@ -55,6 +55,20 @@ $router->add('/siswa/delete/{id:[0-9]+}', array(
     'id'         => 1
 ));
 
+$router->add('/siswa/import', array(
+    'namespace'  => 'Modules\Siswa\Controllers',
+    'module'     => 'siswa',
+    'controller' => 'siswa',
+    'action'     => 'import'
+));
+
+$router->add('/siswa/upload', array(
+    'namespace'  => 'Modules\Siswa\Controllers',
+    'module'     => 'siswa',
+    'controller' => 'siswa',
+    'action'     => 'upload'
+));
+
 //$router->add('/siswa/search/{key:[a-zA-Z0-9_-]+}', array(
 //    'namespace'  => 'Modules\Siswa\Controllers',
 //    'module'     => 'siswa',
