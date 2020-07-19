@@ -28,7 +28,7 @@ class Helper
         {
             $curr = $dt->format('D');
 
-            if($curr != 'Sun')
+            if($curr != 'Sat' && $curr != 'Sun')
             {
                 $days[]= $dt->format('Y-m-d');
             }
