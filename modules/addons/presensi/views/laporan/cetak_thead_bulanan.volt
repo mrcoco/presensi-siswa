@@ -13,8 +13,8 @@
         <?php $d = date('M d',strtotime($item)); ?>
         <th>{{ d }}</th>
     {% endfor %}
-    <th rowspan='2'>I</th>
-    <th rowspan='2'>S</th>
-    <th rowspan='2'>A</th>
+    <th>I</th>
+    <th>S</th>
+    <th>A</th>
 </tr>
 </thead>

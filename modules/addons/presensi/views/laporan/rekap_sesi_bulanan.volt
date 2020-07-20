@@ -1,4 +1,7 @@
 <style>
+    .terlambat {
+        color: rgb(255, 0, 0); /* red */
+    }
     .cetak{
         margin-top: 30px;
     }

@@ -34,13 +34,15 @@ class Module implements ModuleDefinitionInterface
                 "Modules\\Presensi\\Models"      => __DIR__."/models/",
                 "Modules\\Presensi\\Plugin"      => __DIR__."/plugin/",
                 "Modules\\Frontend\\Controllers"      => $config->modules->core."/frontend/controllers/",
+                "Modules\\Webconfig\\Models"      => $config->modules->core."/webconfig/models/",
+                "Modules\\Session\\Controllers" => $config->modules->core."/session/controllers/",
+                "Modules\\Session\\Forms"      => $config->modules->core."/session/forms/",
                 "Modules\\Siswa\\Models"      => $config->modules->addons."/siswa/models/",
                 "Modules\\Kelas\\Models"      => $config->modules->addons."/kelas/models/",
                 "Modules\\Tahunajaran\\Models"      => $config->modules->addons."/tahunajaran/models/",
                 "Modules\\History\\Models"      => $config->modules->addons."/history/models/",
-                "Modules\\Webconfig\\Models"      => $config->modules->core."/webconfig/models/",
-                "Modules\\Session\\Controllers" => $config->modules->core."/session/controllers/",
-                "Modules\\Session\\Forms"      => $config->modules->core."/session/forms/",
+                "Modules\\Libur\\Models"      => $config->modules->addons."/libur/models/",
+
             ]
         );
 

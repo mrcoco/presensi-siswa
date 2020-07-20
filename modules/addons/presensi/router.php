@@ -161,6 +161,13 @@ $router->add('/laporan/bulanan', array(
     'action'     => 'bulanan'
 ));
 
+$router->add('/laporan/semester', array(
+    'namespace'  => 'Modules\Presensi\Controllers',
+    'module'     => 'presensi',
+    'controller' => 'laporan',
+    'action'     => 'semester'
+));
+
 $router->add('/cetak/harian', array(
     'namespace'  => 'Modules\Presensi\Controllers',
     'module'     => 'presensi',

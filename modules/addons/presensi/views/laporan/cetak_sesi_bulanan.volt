@@ -9,6 +9,8 @@
                 {% include 'laporan/cetak_thead_bulanan.volt' %}
                 {% include 'laporan/cetak_tbody_sesi_bulanan.volt' %}
             </table>
+            <br>
+            {% include 'laporan/cetak_footer.volt' %}
         </div>
     </div>
 </div>

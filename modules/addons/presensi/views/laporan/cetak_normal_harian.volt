@@ -9,6 +9,8 @@
             {% include 'laporan/cetak_thead_harian.volt' %}
             {% include 'laporan/cetak_tbody_normal_harian.volt' %}
         </table>
+            <br>
+            {% include 'laporan/cetak_footer.volt' %}
         </div>
     </div>
 </div>

@@ -52,5 +52,10 @@
             margin-right:auto;
             margin-left:auto
         }
+        #presensi-foot{
+            float: right;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
     </style>
 </head>
