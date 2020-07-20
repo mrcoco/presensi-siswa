@@ -9,6 +9,7 @@
         {% set izin = 0 %}
         {% set sakit= 0 %}
         {% set hadir= 0 %}
+        {% set alpa = 0 %}
         {% for k,wk in work %}
             <td>
                 {% for lb in libur %}
@@ -31,6 +32,8 @@
                                     {% set sakit +=1 %}
                                 {% endif %}
                                 {% set hadir +=1 %}
+                            {% else %}
+                                {% set alpa +=1 %}
                             {% endif %}
 
                         {% endfor %}
@@ -41,7 +44,7 @@
 
         <td>{{ izin }}</td>
         <td>{{ sakit }}</td>
-        <td>{{ count_work - hadir }}</td>
+        <td>{{ alpa }}</td>
         <td></td>
     </tr>
 {% endfor %}
