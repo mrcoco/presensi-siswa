@@ -16,7 +16,6 @@
                     {% if lb['tanggal'] == wk %}
                     <b class="terlambat">L</b>
                     {% else %}
-                        {% if item['presensi']|length !== 0 %}
                             {% for pres in item['presensi'] %}
                                 {% if pres.tanggal == wk %}
                                     {% if pres.status == '1' OR pres.status =='2' %}
@@ -37,9 +36,6 @@
                                     {% set alpa +=1 %}
                                 {% endif %}
                             {% endfor %}
-                        {% else %}
-                            {% set alpa +=1 %}
-                        {% endif %}
                     {% endif %}
                 {% endfor %}
             </td>
