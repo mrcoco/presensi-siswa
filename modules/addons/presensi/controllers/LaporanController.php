@@ -197,6 +197,8 @@ class LaporanController extends ControllerBase
         $this->view->setVar('libur',$libur->toArray());
         $this->view->setVar('nip',$this->nip_kepsek);
         $this->view->setVar('kepsek', $this->nama_kepsek);
+        $this->view->setVar('kelas',$kelas);
+        $this->view->setVar('bulan',date('M Y',strtotime(Helper::firstday($bulan))));
         $this->view->setVar('work',$work);
         $this->view->setVar('arr',$arr);
         if($mode == 0){
@@ -234,6 +236,8 @@ class LaporanController extends ControllerBase
         $this->view->setVar('libur',$libur);
         $this->view->setVar('nip',$this->nip_kepsek);
         $this->view->setVar('kepsek', $this->nama_kepsek);
+        $this->view->setVar('kelas',$kelas);
+        $this->view->setVar('tanggal',date('d M Y',strtotime($tanggal)));
         $this->view->setVar('arr',$arr);
         if($mode == 0){
             $this->view->pick("laporan/cetak_normal_harian");

@@ -61,12 +61,11 @@
                             {% endif %}
                             {% set hadir +=1 %}
                         {% endif %}
-
-                    {% endfor %}
+                    {% endfor %} {# end presensi #}
                     {% endif %}
-                {% endfor %}
+                {% endfor %} {# end work#}
             </td>
-        {% endfor %}
+        {% endfor %} {# end arr #}
 
         <td>{{ izin }}</td>
         <td>{{ sakit }}</td>
