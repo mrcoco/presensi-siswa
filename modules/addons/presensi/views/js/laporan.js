@@ -21,3 +21,12 @@ $("#LaporanBulananForm").ajaxForm({
         $("#LaporanBulananResult").html(data);
     }
 });
+
+$("#LaporanSemesterForm").ajaxForm({
+    url: '/search'+url_path+'semester',
+    type: 'post',
+    success: function(data) {
+        //const bl = bulanan(data);
+        $("#LaporanSemesterResult").html(data);
+    }
+});

@@ -76,11 +76,11 @@ $router->add('/presensi/laporan', array(
     'action'     => 'laporan'
 ));
 
-$router->add('/presensi/riwayat', array(
+$router->add('/presensi/rekap', array(
     'namespace'  => 'Modules\Presensi\Controllers',
     'module'     => 'presensi',
     'controller' => 'presensi',
-    'action'     => 'riwayat'
+    'action'     => 'rekap'
 ));
 
 $router->add('/presensi/izin', array(
@@ -182,6 +182,13 @@ $router->add('/cetak/bulanan', array(
     'action'     => 'cetak_bulanan'
 ));
 
+$router->add('/cetak/semester', array(
+    'namespace'  => 'Modules\Presensi\Controllers',
+    'module'     => 'presensi',
+    'controller' => 'laporan',
+    'action'     => 'cetak_semester'
+));
+
 $router->add('/search/laporan/harian', array(
     'namespace'  => 'Modules\Presensi\Controllers',
     'module'     => 'presensi',
@@ -196,44 +203,51 @@ $router->add('/search/laporan/bulanan', array(
     'action'     => 'search_bulanan'
 ));
 
+$router->add('/search/laporan/semester', array(
+    'namespace'  => 'Modules\Presensi\Controllers',
+    'module'     => 'presensi',
+    'controller' => 'laporan',
+    'action'     => 'search_semester'
+));
+
 $router->add('/laporan/presensi/bulanan', array(
     'namespace'  => 'Modules\Presensi\Controllers',
     'module'     => 'presensi',
-    'controller' => 'riwayat',
+    'controller' => 'rekap',
     'action'     => 'bulanan'
 ));
 
 $router->add('/laporan/presensi/harian', array(
     'namespace'  => 'Modules\Presensi\Controllers',
     'module'     => 'presensi',
-    'controller' => 'riwayat',
+    'controller' => 'rekap',
     'action'     => 'harian'
 ));
 
 $router->add('/search/presensi/bulanan', array(
     'namespace'  => 'Modules\Presensi\Controllers',
     'module'     => 'presensi',
-    'controller' => 'riwayat',
+    'controller' => 'rekap',
     'action'     => 'search_bulanan'
 ));
 
 $router->add('/search/presensi/harian', array(
     'namespace'  => 'Modules\Presensi\Controllers',
     'module'     => 'presensi',
-    'controller' => 'riwayat',
+    'controller' => 'rekap',
     'action'     => 'search_harian'
 ));
 
 $router->add('/cetak/presensi/harian', array(
     'namespace'  => 'Modules\Presensi\Controllers',
     'module'     => 'presensi',
-    'controller' => 'riwayat',
+    'controller' => 'rekap',
     'action'     => 'cetak_harian'
 ));
 
 $router->add('/cetak/presensi/bulanan', array(
     'namespace'  => 'Modules\Presensi\Controllers',
     'module'     => 'presensi',
-    'controller' => 'riwayat',
+    'controller' => 'rekap',
     'action'     => 'cetak_bulanan'
 ));

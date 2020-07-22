@@ -51,26 +51,7 @@ class LaporanController extends ControllerBase
             ->join(true)
             ->addJs($this->config->application->addonsDir."presensi/views/js/laporan.js")
             ->addFilter(new Jsmin());
-
-        foreach (Webconfig::find()->toArray() as $k => $v) {
-            if($v['name'] == 'jam_terlambat'){
-                $this->terlambat = $v['content'];
-            }
-            if($v['name'] == 'jam_pulang_awal_jumat'){
-                $this->pulangawal_jumat = $v['content'];
-            }
-            if($v['name'] == 'jam_pulang_awal_normal'){
-                $this->pulangawal_normal = $v['content'];
-            }
-            if($v['name'] == 'kepala_sekolah')
-            {
-                $this->nama_kepsek = $v['content'];
-            }
-            if($v['name'] == 'nip_kepala_sekolah')
-            {
-                $this->nip_kepsek = $v['content'];
-            }
-        }
+        $this->webConfig();
     }
 
     public function indexAction()
@@ -157,7 +138,25 @@ class LaporanController extends ControllerBase
         }else{
             $this->view->pick('laporan/rekap_sesi_bulanan');
         }
+    }
 
+    public function search_semesterAction()
+    {
+        $kelas = $this->request->getPost('kelas');
+        $tahun = $this->request->getPost('tahun_ajaran');
+        $semester = $this->request->getPost('semester');
+        list($start, $end) = $this->getSemester($tahun, $semester);
+        list($work, $libur, $arr) = $this->presensiSemester($start, $end, $kelas, $tahun);
+        //return $arr;
+        $this->view->setRenderLevel(
+            View::LEVEL_ACTION_VIEW
+        );
+        $this->view->setVar('url_print',Base64Url::encode($tahun."/".$semester."/".$start."/".$end."/".$kelas));
+        $this->view->setVar('work',$work);
+        $this->view->setVar('libur',$libur);
+        $this->view->setVar('jml_hari',count($work)-$libur->count());
+        $this->view->setVar('arr',$arr);
+        $this->view->pick("laporan/rekap_semester");
     }
 
     public function harianAction()
@@ -172,6 +171,13 @@ class LaporanController extends ControllerBase
         $this->view->setVar('kelas',$this->kelas);
         $this->view->setVar('tahun',$this->tahun);
         $this->view->pick("laporan/index_bulanan");
+    }
+
+    public function semesterAction()
+    {
+        $this->view->setVar('kelas',$this->kelas);
+        $this->view->setVar('tahun',$this->tahun);
+        $this->view->pick("laporan/index_semester");
     }
 
     public function cetak_bulananAction()
@@ -244,6 +250,26 @@ class LaporanController extends ControllerBase
         }else{
             $this->view->pick("laporan/cetak_sesi_harian");
         }
+    }
+
+    public function cetak_semesterAction()
+    {
+        $geturl = Base64Url::decode($this->request->getQuery('url'));
+        list($tahun,$semester,$start,$end,$kelas) = explode("/",$geturl);
+        list($work, $libur, $arr) = $this->presensiSemester($start, $end, $kelas, $tahun);
+        $this->view->setRenderLevel(
+            View::LEVEL_ACTION_VIEW
+        );
+        $this->view->setVar('nip',$this->nip_kepsek);
+        $this->view->setVar('kepsek', $this->nama_kepsek);
+        $this->view->setVar('kelas',$kelas);
+        $this->view->setVar('semester',$semester);
+        $this->view->setVar('tahun',$tahun);
+        $this->view->setVar('work',$work);
+        $this->view->setVar('libur',$libur);
+        $this->view->setVar('jml_hari',count($work)-$libur->count());
+        $this->view->setVar('arr',$arr);
+        $this->view->pick("laporan/cetak_semester");
     }
 
     /**
@@ -323,5 +349,91 @@ class LaporanController extends ControllerBase
             ];
         }
         return $arr;
+    }
+
+    public function webConfig()
+    {
+        foreach (Webconfig::find()->toArray() as $k => $v) {
+            if ($v['name'] == 'jam_terlambat') {
+                $this->terlambat = $v['content'];
+            }
+            if ($v['name'] == 'jam_pulang_awal_jumat') {
+                $this->pulangawal_jumat = $v['content'];
+            }
+            if ($v['name'] == 'jam_pulang_awal_normal') {
+                $this->pulangawal_normal = $v['content'];
+            }
+            if ($v['name'] == 'kepala_sekolah') {
+                $this->nama_kepsek = $v['content'];
+            }
+            if ($v['name'] == 'nip_kepala_sekolah') {
+                $this->nip_kepsek = $v['content'];
+            }
+        }
+    }
+
+    /**
+     * @param $tahun
+     * @param $semester
+     * @return array
+     */
+    public function getSemester($tahun, $semester)
+    {
+        list($th_start, $th_end) = explode("-", $tahun);
+        if ($semester == "1") {
+            $start = $th_start . "-07-01";
+            $end = Helper::lastDay("12-" . $th_start);
+        } else {
+            $start = $th_end . "-01-01";
+            $end = Helper::lastDay("07-" . $th_end);
+        }
+        return array($start, $end);
+    }
+
+    /**
+     * @param $start
+     * @param $end
+     * @param $kelas
+     * @param $tahun
+     * @return array
+     */
+    public function presensiSemester($start, $end, $kelas, $tahun)
+    {
+        $work = Helper::workingDay($start, $end);
+        $libur = Libur::find([
+            'conditions' => "tanggal BETWEEN ?1 AND ?2",
+            'bind' => [
+                1 => $start,
+                2 => $end,
+            ]
+        ]);
+        $history = History::find([
+            'conditions' => "kelas= ?1 AND tahun= ?2",
+            'bind' => [
+                1 => $kelas,
+                2 => $tahun
+            ]
+        ]);
+        $arr = array();
+        foreach ($history as $siswa) {
+            $arr[] = [
+                'nisn' => $siswa->nisn,
+                'nama' => $siswa->nama,
+                'sex' => $siswa->sex,
+                'hadir' => $siswa->getPresensi(
+                    ['conditions' => "kelas = '{$kelas}' AND tahun_ajaran='{$tahun}' AND tanggal BETWEEN '{$start}' AND '{$end}' AND status='1'",
+                        'columns' => "distinct tanggal"
+                    ])->count(),
+                'izin' => $siswa->getPresensi(
+                    ['conditions' => "kelas = '{$kelas}' AND tahun_ajaran='{$tahun}' AND tanggal BETWEEN '{$start}' AND '{$end}' AND status='3'",
+                        'columns' => "distinct tanggal"
+                    ])->count(),
+                'sakit' => $siswa->getPresensi(
+                    ['conditions' => "kelas = '{$kelas}' AND tahun_ajaran='{$tahun}' AND tanggal BETWEEN '{$start}' AND '{$end}' AND status='4'",
+                        'columns' => "distinct tanggal"
+                    ])->count(),
+            ];
+        }
+        return array($work, $libur, $arr);
     }
 }

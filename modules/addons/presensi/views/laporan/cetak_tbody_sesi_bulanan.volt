@@ -1,5 +1,4 @@
 <tbody>
-
 {% for item in arr %}
     <tr>
         <td>{{ loop.index }}</td>

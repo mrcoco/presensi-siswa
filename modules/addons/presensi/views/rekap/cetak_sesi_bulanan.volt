@@ -6,8 +6,8 @@
     <div class="row">
         <div class="col-md-12">
             <table id="presensi-bulanan" class="table-bordered table-condensed">
-                {% include 'riwayat/thead_sesi_bulanan.volt' %}
-                {% include 'riwayat/tbody_sesi_bulanan.volt' %}
+                {% include 'rekap/thead_sesi_bulanan.volt' %}
+                {% include 'rekap/tbody_sesi_bulanan.volt' %}
             </table>
         </div>
     </div>
