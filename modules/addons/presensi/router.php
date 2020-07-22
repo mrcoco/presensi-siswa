@@ -251,3 +251,45 @@ $router->add('/cetak/presensi/bulanan', array(
     'controller' => 'rekap',
     'action'     => 'cetak_bulanan'
 ));
+
+$router->add('/riwayat/harian', array(
+    'namespace'  => 'Modules\Presensi\Controllers',
+    'module'     => 'presensi',
+    'controller' => 'riwayat',
+    'action'     => 'harian'
+));
+
+$router->add('/riwayat/bulanan', array(
+    'namespace'  => 'Modules\Presensi\Controllers',
+    'module'     => 'presensi',
+    'controller' => 'riwayat',
+    'action'     => 'bulanan'
+));
+
+$router->add('/search/riwayat/bulanan', array(
+    'namespace'  => 'Modules\Presensi\Controllers',
+    'module'     => 'presensi',
+    'controller' => 'riwayat',
+    'action'     => 'search_bulanan'
+));
+
+$router->add('/search/riwayat/harian', array(
+    'namespace'  => 'Modules\Presensi\Controllers',
+    'module'     => 'presensi',
+    'controller' => 'riwayat',
+    'action'     => 'search_harian'
+));
+
+$router->add('/cetak/riwayat/harian', array(
+    'namespace'  => 'Modules\Presensi\Controllers',
+    'module'     => 'riwayat',
+    'controller' => 'rekap',
+    'action'     => 'cetak_harian'
+));
+
+$router->add('/cetak/riwayat/bulanan', array(
+    'namespace'  => 'Modules\Presensi\Controllers',
+    'module'     => 'riwayat',
+    'controller' => 'rekap',
+    'action'     => 'cetak_bulanan'
+));
