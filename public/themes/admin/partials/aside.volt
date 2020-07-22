@@ -55,7 +55,23 @@
                 <!-- BEGIN: user -->
                 {% if auth.getIdentity()['profile'] == "Users" %}
                     <li>
-                        <a href="{{ url("presensi/rekap") }}">Riwayat Presensi</a>
+                        <a href="javascript:;">
+                            <span class="nav-icon">
+                              <i class="fa fa-fw fa-tasks"></i>
+                            </span>
+                            <span class="nav-title">Riwayat Presensi</span>
+                            <span class="nav-tools">
+                              <i class="fa fa-fw arrow"></i>
+                            </span>
+                        </a>
+                        <ul class="nav nav-sub nav-stacked">
+                            <li>
+                                <a href="{{ url("riwayat/bulanan") }}">Presensi Bulanan</a>
+                            </li>
+{#                            <li>#}
+{#                                <a href="{{ url("riwayat/harian") }}">Presensi harian</a>#}
+{#                            </li>#}
+                        </ul>
                     </li>
 
                 {% endif %}
