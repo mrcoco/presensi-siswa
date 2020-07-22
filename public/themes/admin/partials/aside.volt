@@ -55,7 +55,7 @@
                 <!-- BEGIN: user -->
                 {% if auth.getIdentity()['profile'] == "Users" %}
                     <li>
-                        <a href="{{ url("presensi/riwayat") }}">Riwayat Presensi</a>
+                        <a href="{{ url("presensi/rekap") }}">Riwayat Presensi</a>
                     </li>
 
                 {% endif %}
@@ -159,6 +159,9 @@
                         </li>
                         <li>
                             <a href="{{ url("laporan/bulanan") }}">Rekap Bulanan</a>
+                        </li>
+                        <li>
+                            <a href="{{ url("laporan/semester") }}">Rekap Semester</a>
                         </li>
                     </ul>
                 </li>
