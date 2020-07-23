@@ -21,12 +21,16 @@ use Modules\Siswa\Plugin\Batch;
 use Modules\Siswa\Plugin\Publish;
 use Modules\Tahunajaran\Models\Tahunajaran;
 use Modules\User\Models\Users;
+use Phalcon\Assets\Filters\Jsmin;
+use Phalcon\Http\Response;
+use Phalcon\Mvc\Model;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Reader\Exception;
 
 class SiswaController extends ControllerBase
 {
     /**
-     * @var \Phalcon\Mvc\Model|void
+     * @var Model|void
      */
     private $tahun;
 
@@ -38,7 +42,7 @@ class SiswaController extends ControllerBase
             ->setTargetUri("themes/admin/assets/js/combined-siswa.js")
             ->join(true)
             ->addJs($this->config->application->addonsDir."siswa/views/js/js.js")
-            ->addFilter(new \Phalcon\Assets\Filters\Jsmin());
+            ->addFilter(new Jsmin());
         $this->tahun = Tahunajaran::findFirst("status='1'");
     }
 
@@ -72,7 +76,7 @@ class SiswaController extends ControllerBase
                 );
             }
         }
-        $response = new \Phalcon\Http\Response();
+        $response = new Response();
         $response->setContentType('application/json', 'UTF-8');
         $response->setJsonContent($result);
         return $response->send();
@@ -126,7 +130,7 @@ class SiswaController extends ControllerBase
             'total'     => $qryTotal->count(),
             'filter'    => $arProp
         );
-        $response = new \Phalcon\Http\Response();
+        $response = new Response();
         $response->setContentType('application/json', 'UTF-8');
         $response->setJsonContent($data);
         return $response->send();
@@ -156,23 +160,10 @@ class SiswaController extends ControllerBase
             $alert = "error";
             $msg = "Import Siswa Gagal";
         }
-        $response = new \Phalcon\Http\Response();
+        $response = new Response();
         $response->setContentType('application/json', 'UTF-8');
         $response->setJsonContent(array('_id' => "excel",'alert' => $alert, 'msg' => $msg, 'files' => $_FILES ));
         return $response->send();
-    }
-
-
-
-    public function batchAction()
-    {
-        $siswa = Siswa::find();
-        $sql ="";
-        foreach ($siswa as $item)
-        {
-            $sql .= "INSERT INTO `users` (`name`,`profilesId`,`email`,`password`,`banned`,`suspended`,`active`) VALUES ('".$item->nama."','2','".$item->nisn."','".$this->security->hash($item->pass)."','N','N','Y');<br>";
-        }
-        echo $sql;
     }
 
     public function createAction()
@@ -223,7 +214,7 @@ class SiswaController extends ControllerBase
             $msg .= "Created failed nisn exsist ".$siswa->nama;
         }
 
-        $response = new \Phalcon\Http\Response();
+        $response = new Response();
         $response->setContentType('application/json', 'UTF-8');
         $response->setJsonContent(array('_id' => $this->request->getPost("nama"),'alert' => $alert, 'msg' => $msg ));
         return $response->send();
@@ -232,6 +223,7 @@ class SiswaController extends ControllerBase
     public function editAction()
     {
         $this->view->disable();
+        $msg ="";
         $data = Siswa::findFirst($this->request->getPost('hidden_id'));
         $data->nama = $this->request->getPost('nama');
 	    $data->nisn = $this->request->getPost('nisn');
@@ -249,11 +241,22 @@ class SiswaController extends ControllerBase
                 $msg .= $message." ";
             }
         }else{
-            $this->historyKelas();
+            $kelas = History::findFirst([
+                'conditions' => 'nisn = ?1 AND tahun =?2',
+                'bind' => [
+                    1 => $this->request->getPost('nisn'),
+                    2 => $this->tahun->tahun
+                ]
+            ]);
+            if(!$kelas){
+                $this->historyKelas();
+            }else{
+                $this->updateHistoryKelas($kelas);
+            }
             $alert = "sukses";
             $msg .= "page was created successfully";
         }
-        $response = new \Phalcon\Http\Response();
+        $response = new Response();
         $response->setContentType('application/json', 'UTF-8');
         $response->setJsonContent(array('_id' => $this->request->getPost("nama"),'alert' => $alert, 'msg' => $msg ));
         return $response->send();
@@ -263,7 +266,7 @@ class SiswaController extends ControllerBase
     public function getAction()
     {
         $data = Siswa::findFirst($this->request->getQuery('id'));
-        $response = new \Phalcon\Http\Response();
+        $response = new Response();
         $response->setContentType('application/json', 'UTF-8');
         $response->setJsonContent($data->toArray());
         return $response->send();
@@ -281,7 +284,7 @@ class SiswaController extends ControllerBase
             $alert  = "sukses";
             $msg    = "Siswa was deleted ";
         }
-        $response = new \Phalcon\Http\Response();
+        $response = new Response();
         $response->setContentType('application/json', 'UTF-8');
         $response->setJsonContent(array('_id' => $id,'alert' => $alert, 'msg' => $msg ));
         return $response->send();
@@ -317,7 +320,7 @@ class SiswaController extends ControllerBase
 
     /**
      * @param $file
-     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     * @throws Exception
      */
     public function batchInsert($file)
     {
@@ -346,5 +349,18 @@ class SiswaController extends ControllerBase
         $history->setRows(["nama","nisn", "sex", "kelas", "tahun"])->setValues($his)->insert();
         $users = new Batch("users");
         $users->setRows(['name','profilesId','email','password','banned', 'suspended','active' ])->setValues($user)->insert();
+    }
+
+    /**
+     * @param Model $kelas
+     */
+    public function updateHistoryKelas(Model $kelas)
+    {
+        $kelas->nama  = $this->request->getPost('nama', 'striptags');
+        $kelas->sex   = $this->request->getPost('sex');
+        $kelas->kelas = $this->request->getPost('kelas');
+        $kelas->tahun = $this->tahun->tahun;
+        $kelas->updated = date('Y-m-d H:i:s');
+        $kelas->update();
     }
 }
