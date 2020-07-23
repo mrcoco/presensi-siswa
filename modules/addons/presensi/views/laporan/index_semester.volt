@@ -38,11 +38,17 @@
                     </select>
                 </div>
                 <div class="form-group" >
-                    <button type="submit" name="submit" class="btn btn-primary" id="submit"><i class="fa fa-search"></i>  Submit </button>
+                    <button type="submit" name="submit" class="btn btn-primary" id="submit">
+                        <i class="fa fa-search"></i>  Submit
+                    </button>
                 </div>
             </form>
 
-            <div id="LaporanSemesterResult"></div>
+            <div id="LaporanSemesterResult">
+
+            </div>
         </div>
     </div>
+
 </div>
+
