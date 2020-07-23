@@ -300,7 +300,7 @@ class LaporanController extends ControllerBase
                 'nama' => $siswa->nama,
                 'sex' => $siswa->sex,
                 'presensi' => $siswa->getPresensi(
-                    ['conditions' => "kelas = '{$kelas}' AND tahun_ajaran='{$tahun}' AND DATE_FORMAT(tanggal,'%m-%Y') = '{$bulan}' " . $isMode]),
+                    ['conditions' => "tahun_ajaran='{$tahun}' AND DATE_FORMAT(tanggal,'%m-%Y') = '{$bulan}' " . $isMode]),
             ];
         }
         return $arr;
@@ -345,7 +345,7 @@ class LaporanController extends ControllerBase
                 'nama' => $siswa->nama,
                 'sex' => $siswa->sex,
                 'presensi' => $siswa->getPresensi(
-                    ['conditions' => "kelas = '{$kelas}' AND tahun_ajaran='{$tahun}' AND tanggal = '{$tanggal}' " . $isMode]),
+                    ['conditions' => "tahun_ajaran='{$tahun}' AND tanggal = '{$tanggal}' " . $isMode]),
             ];
         }
         return $arr;
@@ -421,15 +421,15 @@ class LaporanController extends ControllerBase
                 'nama' => $siswa->nama,
                 'sex' => $siswa->sex,
                 'hadir' => $siswa->getPresensi(
-                    ['conditions' => "kelas = '{$kelas}' AND tahun_ajaran='{$tahun}' AND tanggal BETWEEN '{$start}' AND '{$end}' AND status='1'",
+                    ['conditions' => "tahun_ajaran='{$tahun}' AND tanggal BETWEEN '{$start}' AND '{$end}' AND status='1'",
                         'columns' => "distinct tanggal"
                     ])->count(),
                 'izin' => $siswa->getPresensi(
-                    ['conditions' => "kelas = '{$kelas}' AND tahun_ajaran='{$tahun}' AND tanggal BETWEEN '{$start}' AND '{$end}' AND status='3'",
+                    ['conditions' => "tahun_ajaran='{$tahun}' AND tanggal BETWEEN '{$start}' AND '{$end}' AND status='3'",
                         'columns' => "distinct tanggal"
                     ])->count(),
                 'sakit' => $siswa->getPresensi(
-                    ['conditions' => "kelas = '{$kelas}' AND tahun_ajaran='{$tahun}' AND tanggal BETWEEN '{$start}' AND '{$end}' AND status='4'",
+                    ['conditions' => "tahun_ajaran='{$tahun}' AND tanggal BETWEEN '{$start}' AND '{$end}' AND status='4'",
                         'columns' => "distinct tanggal"
                     ])->count(),
             ];
