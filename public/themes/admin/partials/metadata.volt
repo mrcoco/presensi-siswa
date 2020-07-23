@@ -21,6 +21,7 @@
 <link rel="stylesheet" href="{{ url("themes/admin/") }}trumbowyg/dist/ui/trumbowyg.min.css" type="text/css"/>
 <link rel="stylesheet" href="{{ url("themes/admin/") }}assets/css/jquery.auto-complete.css">
 <link rel="stylesheet" href="{{ url("themes/admin/") }}assets/css/bootstrap-datepicker3.min.css">
+<link rel="stylesheet" href="{{ url("themes/admin/") }}assets/css/spinner.css">
 
 {% if assets.exists("header") %}
     {{ assets.outputCss('header') }}
