@@ -13,6 +13,7 @@ namespace Modules\Presensi\Controllers;
 
 use Modules\Frontend\Controllers\ControllerBase;
 use Modules\History\Models\History;
+use Modules\Libur\Models\Libur;
 use Modules\Presensi\Plugin\Base64Url;
 use Modules\Presensi\Plugin\Helper;
 use Modules\Webconfig\Models\Webconfig;
@@ -76,13 +77,19 @@ class RekapController extends ControllerBase
         $bulan  = $this->request->getPost('bulan');
         $nisn   = $this->request->getPost('siswa_nisn');
         $arr = $this->personalBulanan($mode,$nisn,$bulan);
-
+        $libur = Libur::find([
+            'conditions' => "DATE_FORMAT(tanggal,'%m-%Y')= ?1",
+            'bind'  => [
+                1 => $bulan
+            ]
+        ]);
         $this->view->setRenderLevel(
             View::LEVEL_ACTION_VIEW
         );
         $this->view->setVar('work',Helper::workBulanan($bulan));
         $this->view->setVar('url_print',Base64Url::encode($bulan."/".$mode."/".$nisn));
         $this->view->setVar('arr',$arr);
+        $this->view->setVar('libur',$libur->toArray());
         if($mode == 0){
             $this->view->pick('rekap/riwayat_normal_bulanan');
         }else{
@@ -98,12 +105,20 @@ class RekapController extends ControllerBase
         $end  = $this->request->getPost('end');
         $nisn   = $this->request->getPost('siswa_nisn');
         $arr = $this->personalHarian($mode,$nisn,$start,$end);
+        $libur = Libur::find([
+            'conditions' => "tanggal BETWEEN ?1 AND ?2",
+            'bind'  => [
+                1 => $start,
+                2 => $end
+            ]
+        ]);
         $this->view->setRenderLevel(
             View::LEVEL_ACTION_VIEW
         );
         $this->view->setVar('work',Helper::workingDay($start,$end));
         $this->view->setVar('url_print',Base64Url::encode($start."/".$end."/".$mode."/".$nisn));
         $this->view->setVar('arr',$arr);
+        $this->view->setVar('libur',$libur->toArray());
         if($mode == 0){
             $this->view->pick('rekap/riwayat_normal_harian');
         }else{
@@ -116,12 +131,19 @@ class RekapController extends ControllerBase
         $geturl = Base64Url::decode($this->request->getQuery('url'));
         list($start,$end,$mode,$nisn) = explode("/",$geturl);
         $arr = $this->personalHarian($mode,$nisn,$start,$end);
-
+        $libur = Libur::find([
+            'conditions' => "tanggal BETWEEN ?1 AND ?2",
+            'bind'  => [
+                1 => $start,
+                2 => $end
+            ]
+        ]);
         $this->view->setRenderLevel(
             View::LEVEL_ACTION_VIEW
         );
         $this->view->setVar('work',Helper::workingDay($start,$end));
         $this->view->setVar('arr',$arr);
+        $this->view->setVar('libur',$libur->toArray());
         if($mode == 0){
             $this->view->pick('rekap/cetak_normal_harian');
         }else{
@@ -134,12 +156,18 @@ class RekapController extends ControllerBase
         $geturl = Base64Url::decode($this->request->getQuery('url'));
         list($bulan,$mode,$nisn) = explode("/",$geturl);
         $arr = $this->personalBulanan($mode,$nisn,$bulan);
-
+        $libur = Libur::find([
+            'conditions' => "DATE_FORMAT(tanggal,'%m-%Y')= ?1",
+            'bind'  => [
+                1 => $bulan
+            ]
+        ]);
         $this->view->setRenderLevel(
             View::LEVEL_ACTION_VIEW
         );
         $this->view->setVar('work',Helper::workBulanan($bulan));
         $this->view->setVar('arr',$arr);
+        $this->view->setVar('libur',$libur->toArray());
         if($mode == 0){
             $this->view->pick('rekap/cetak_normal_bulanan');
         }else{
