@@ -20,7 +20,9 @@ use Phalcon\Logger\Adapter\File as FileLogger;
 use Phalcon\Logger\Formatter\Line as FormatterLine;
 use Phalms\Auth\Auth;
 use Phalms\Acl\Acl;
+use Phalms\HelperExtension;
 use Phalms\Mail\Mail;
+use Phalms\PhpFunctionExtension;
 use Phalms\Widget\Widget;
 class Bootstrap
 {
@@ -108,6 +110,8 @@ class Bootstrap
                 "Modules\Menu\Models\Menu"          => $config->application->modulesDir."core/menu/models/Menu.php",
                 "Modules\Modules\Models\Modules"    => $config->application->modulesDir."core/modules/models/Modules.php",
                 "Modules\User\Models\RememberTokens"    => $config->application->modulesDir."core/user/models/RememberTokens.php",
+                "Modules\User\Models\Profiles"    => $config->application->modulesDir."core/user/models/Profiles.php",
+                "Modules\User\Models\Permissions"    => $config->application->modulesDir."core/user/models/Permissions.php",
             ]);
 
         $loader->register();
@@ -249,6 +253,16 @@ class Bootstrap
                     'compiledPath' => $config->application->cacheDir . 'volt/',
                     'compiledSeparator' => '_'
                 ]);
+                $compiler = $volt->getCompiler();
+                $compiler->addExtension(
+                    new PhpFunctionExtension()
+                );
+                $compiler->addFunction(
+                    'search_arr',
+                    function ($resolvedArgs, $exprArgs) {
+                        return 'Phalms\HelperExtension::search_by_value(' . $resolvedArgs . ')';
+                    }
+                );
 
                 return $volt;
             }
