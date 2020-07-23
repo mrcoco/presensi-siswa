@@ -50,6 +50,7 @@ class Auth extends Component
         $this->session->set('auth-identity', [
             'id' => $user->id,
             'name' => $user->name,
+            'email' => $user->email,
             'profile' => $user->profile->name
         ]);
     }
